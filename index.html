@@ -39,17 +39,42 @@
 
 
     <main>
+        <section class="boosts">
+            <h2>Boosts</h2>
+            <ul>
+                <li>
+                    <img src="assets/images/x2Clicks.jpg" alt="x2 clicks">
+                    <p>x2 clicks</p>
+                    <button class="buy-button">Buy<br><span class="price">1000$</span></button>
+                </li>
+                <li>
+                    <img src="assets/images/AutoCliksWhite.png" alt="autoClicker">
+                    <p>Auto Clicker </p>
+                    <button class="buy-button">Buy <br><span class="price">0</span></button>
+                </li>
+                <li>
+                    <img src="assets/images/+100Pizzas.png" alt="+100pizzas">
+                    <p>+100 pizzas</p>
+                    <button class="buy-button">Buy <br><span class="price">0</span></button>
+                </li>
+            </ul>
+            <p>Coins: <span id="moneyCount">0</span></p>
+        </section>
         <section class="game">
-            <canvas
-                id="pizzaCanvas"
-                width="500"
-                height="500">
+            <canvas id="pizzaCanvas" width="500" height="500">
+                <img src="assets/images/boxPizzaPizzaClicker.png" alt="pizza box" id="pizzaBox">
             </canvas>
             <div class="stats">
                 <p>Pizzas<br>sold: <span id="pizzaCount">0</span></p>
                 <button id="cookButton">Cook</button>
                 <p>remaining<br>slices: <span id="sliceCount">8</span></p>
             </div>
+        </section>
+        <section class="metrics">
+            <h2>Game Metrics</h2>
+            <p>Total clicks: <span id="totalClicks">0</span></p>
+            <p>Clicks per second: <span id="clicksPerSecond">0</span></p>
+            <p>Slices per second: <span id="slicesPerSecond">0</span></p>
         </section>
     </main>
 
