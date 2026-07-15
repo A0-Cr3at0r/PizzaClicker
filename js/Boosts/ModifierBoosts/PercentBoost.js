@@ -1,4 +1,4 @@
-import ModifierBoost from "./ModifierBoost";
+import ModifierBoost from "./ModifierBoost.js";
 
 export default class PercentBoost extends ModifierBoost {
     #percent;
@@ -9,7 +9,7 @@ export default class PercentBoost extends ModifierBoost {
     }
 
     modify(value){
-        return value*this.#percent/100;
+        return value * (1 + this.#percent / 100);
     }
 
 }

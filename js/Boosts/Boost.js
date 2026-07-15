@@ -11,8 +11,6 @@ export default class Boost {
         this.#description = description;
     }
 
-    buy(game){}
-
     getName() {
         return this.#name;
     }

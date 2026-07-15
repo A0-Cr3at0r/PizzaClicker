@@ -1,4 +1,4 @@
-import Boost from "../Boosts";
+import Boost from "../Boost.js";
 
 export default class ActiveBoost extends Boost {
 

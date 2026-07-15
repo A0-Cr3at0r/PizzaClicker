@@ -40,77 +40,20 @@
 
     <main>
         <section class="boosts">
-            <h2>Boosts</h2>
-            <ul id="boostList">
+            <details open>
+                <summary>Boosts</summary>
+                <ul id="boostList"></ul>
+            </details>
 
-                <li data-boost="percent">
-                    <img src="assets/images/percentBoost.png" alt="+20%">
-                    <div>
-                        <p>+20% Revenue</p>
-                        <small>Owned : <span class="boost-level">0</span></small>
-                    </div>
-                    <button class="buy-button">
-                        Buy<br>
-                        <span class="price">0</span>
-                    </button>
-                </li>
+    <p class="wallet">
+        Coins :
+        <span id="moneyCount">0</span> 🪙
+    </p>
 
-                <li data-boost="x2">
-                    <img src="assets/images/x2Clicks.jpg" alt="x2 clicks">
-                    <div>
-                        <p>x2 Revenue</p>
-                        <small><span class="boost-timer">0</span>s</small>
-                    </div>
-                    <button class="buy-button">
-                        Buy<br>
-                        <span class="price">0</span>
-                    </button>
-                </li>
-
-                <li data-boost="x5">
-                    <img src="assets/images/x5Clicks.png" alt="x5 clicks">
-                    <div>
-                        <p>x5 Revenue</p>
-                        <small><span class="boost-timer">0</span>s</small>
-                    </div>
-                    <button class="buy-button">
-                        Buy<br>
-                        <span class="price">0</span>
-                    </button>
-                </li>
-
-                <li data-boost="slicePack">
-                    <img src="assets/images/+100Pizzas.png" alt="+100 slices">
-                    <div>
-                        <p>+100 Slices</p>
-                    </div>
-                    <button class="buy-button">
-                        Buy<br>
-                        <span class="price">0</span>
-                    </button>
-                </li>
-
-                <li data-boost="autoClicker">
-                    <img src="assets/images/AutoCliksWhite.png" alt="Auto Clicker">
-                    <div>
-                        <p>Auto Clicker</p>
-                        <small>Owned : <span class="boost-level">0</span></small>
-                    </div>
-                    <button class="buy-button">
-                        Buy<br>
-                        <span class="price">0</span>
-                    </button>
-                </li>
-            </ul>
-
-            <p>
-                Coins : <span id="moneyCount">0</span>🪙
-            </p>
-
+    <p id="boostMessage" class="boost-message"></p>
         </section>
 
         <section class="game">
-
             <canvas id="pizzaCanvas" width="500" height="500">
                 <img src="assets/images/boxPizzaPizzaClicker.png"
                     alt="pizza box"

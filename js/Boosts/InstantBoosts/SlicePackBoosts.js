@@ -1,4 +1,4 @@
-import InstantBoost  from "./InstantBoosts"
+import InstantBoost from "./InstantBoost.js";
 
 export default class SlicePackBoost extends InstantBoost {
 
@@ -7,7 +7,7 @@ export default class SlicePackBoost extends InstantBoost {
     }
 
     apply(game){
-        game.state.addSlices(100);
+        game.addSlices(100);
     }
 
 }

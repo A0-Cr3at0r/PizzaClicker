@@ -1,19 +1,48 @@
+import ModifierBoost from "../Boosts/ModifierBoosts/ModifierBoost.js";
+import ActiveBoost from "../Boosts/ActiveBoosts/ActiveBoost.js";
+import InstantBoost from "../Boosts/InstantBoosts/InstantBoost.js";
+
 export default class BoostManager {
+    #wallet;
+
+    #boosts;
+
     #modifierBoosts;
     #activeBoosts;
 
-    constructor() {
+    constructor(wallet) {
+        this.#wallet = wallet;
+
+        this.#boosts = [];
+
         this.#modifierBoosts = [];
         this.#activeBoosts = [];
 
     }
 
-    addModifierBoost(boost) {
-        this.#modifierBoosts.push(boost);
+    register(boost) {
+        this.#boosts.push(boost);
+
     }
 
-    addActiveBoost(boost) {
-        this.#activeBoosts.push(boost);
+    buy(boost, game) {
+        if (!this.#wallet.pay(boost.getPrice())) {
+            return false;
+        }
+
+        if (boost instanceof InstantBoost) {
+            boost.apply(game);
+        }
+
+        else if (boost instanceof ModifierBoost) {
+            this.#modifierBoosts.push(boost);
+        }
+
+        else if (boost instanceof ActiveBoost) {
+            this.#activeBoosts.push(boost);
+        }
+
+        return true;
     }
 
     computeGain(baseValue) {
@@ -24,17 +53,35 @@ export default class BoostManager {
         }
 
         return value;
+
     }
 
     update(deltaTime) {
         const actions = [];
 
-        for (const boost of this.#activeBoosts) {
-            actions.push(...boost.update(deltaTime));
+        this.#modifierBoosts =
+            this.#modifierBoosts.filter(boost => boost.update(deltaTime) !== false);
 
-        }
+        this.#activeBoosts = this.#activeBoosts.filter(boost => {
+            const boostActions = boost.update(deltaTime);
+
+            if (boostActions !== false) {
+                actions.push(...boostActions);
+                return true;
+            }
+
+            return false;
+        });
 
         return actions;
+    }
+
+    getBoosts() {
+        return this.#boosts;
+    }
+
+    wallet() {
+        return this.#wallet;
     }
 
 }

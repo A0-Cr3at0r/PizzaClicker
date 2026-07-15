@@ -1,4 +1,4 @@
-import ModifierBoost from "./ModifierBoost";
+import ModifierBoost from "./ModifierBoost.js";
 
 export default class MultiplierBoost extends ModifierBoost {
     #multiplier
@@ -14,13 +14,9 @@ export default class MultiplierBoost extends ModifierBoost {
         return value*this.#multiplier;
     } 
 
-    finish(dt) {
+    update(dt) {
         this.#duration -= dt;
-        if (this.#duration <= 0) {
-            return false;
-        }
-
-        return true;
+        return this.#duration > 0;
     }
 
 }

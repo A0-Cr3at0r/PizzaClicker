@@ -1,14 +1,22 @@
-import ActiveBoost  from "./ActiveBoosts"
-import  BoostAction from "../BoostActions";
+import ActiveBoost  from "./ActiveBoost.js";
+import { BoostAction } from "../BoostAction.js";
 
 export default class AutoClickerBoost extends ActiveBoost {
 
     #clicksPerSecond;
     #timer;
 
-    constructor(clicksPerSecond = 1) {
+    constructor(icon, clicksPerSecond = 1) {
+        super(
+            "Auto Clicker",
+            500,
+            icon,
+            "Automatically clicks"
+        );
+        
         this.#clicksPerSecond = clicksPerSecond;
         this.#timer = 0;
+        
     }
 
     update(deltaTime) {

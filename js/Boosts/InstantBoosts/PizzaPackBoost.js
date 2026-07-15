@@ -1,4 +1,4 @@
-import InstantBoost  from "./InstantBoosts"
+import InstantBoost from "./InstantBoost.js";
 
 export default class PizzaPackBoost extends InstantBoost {
 
@@ -7,7 +7,7 @@ export default class PizzaPackBoost extends InstantBoost {
     }
 
     apply(game){
-        game.state.addPizzas(1000);
+        game.addPizzas(100);
     }
 
 }
