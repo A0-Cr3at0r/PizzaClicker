@@ -53,10 +53,15 @@ export class Game {
                 this.#pizzaCount++;
             }
         }
+        return  {
+                    click: false,
+                    slicesSold: amount,
+                    pizzasCooked: Math.floor(amount/this.#totalSlices)
+                };
     }
 
     addPizzas(amount) {
-        this.addSlices(amount * this.#totalSlices);
+        return this.addSlices(amount * this.#totalSlices);
     }
 
     pizzaCount() {

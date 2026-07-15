@@ -9,7 +9,7 @@ export default class PercentBoost extends ModifierBoost {
     }
 
     modify(value){
-        return value * (1 + this.#percent / 100);
+        return Math.floor(value * (1 + this.#percent / 100));
     }
 
 }

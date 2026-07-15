@@ -2,7 +2,9 @@ const clickSound = new Audio("assets/sounds/click.mp3");
 const cookSound = new Audio("assets/sounds/cook.mp3");
 const successSound = new Audio("assets/sounds/success.mp3");
 const backgroundMusic = new Audio("assets/sounds/backgroundMusic.mp3");
-const seriousBackgroundMusic = new Audio("assets/sounds/seriousBackgroundMusic.mp3");   
+const seriousBackgroundMusic = new Audio("assets/sounds/seriousBackgroundMusic.mp3"); 
+const paySuccess = new Audio("assets/sounds/paySuccess.mp3");  
+const payError = new Audio("assets/sounds/payError.mp3");  
 
 export class AudioManager {
     #clickSound;
@@ -44,6 +46,14 @@ export class AudioManager {
 
     stopSeriousMode() {
         this.#backgroundMusic.loop = backgroundMusic;
+    }
+
+    playPaySuccess() {
+        paySuccess.play();
+    }
+
+    playPayError() {
+        payError.play();
     }
 
 }

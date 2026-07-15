@@ -4,9 +4,13 @@ export default class BoostUI {
     #moneyCount;
     #message;
 
+    #tooltip;
+
     #messageTimeout;
 
-    constructor(boostManager, game) {
+    #onBuy;
+
+    constructor(boostManager, onBuy) {
 
         this.#boostList = document.getElementById("boostList");
         this.#moneyCount = document.getElementById("moneyCount");
@@ -14,12 +18,29 @@ export default class BoostUI {
 
         this.#messageTimeout = null;
 
-        this.#createBoostCards(boostManager, game);
+        this.#onBuy = onBuy;
+
+        this.#tooltip = this.#createTooltip();
+
+        this.#createBoostCards(boostManager);
 
         this.render(boostManager.wallet());
+
     }
 
-    #createBoostCards(boostManager, game) {
+    #createTooltip() {
+
+        const tooltip = document.createElement("div");
+
+        tooltip.classList.add("boost-tooltip-global");
+
+        document.body.appendChild(tooltip);
+
+        return tooltip;
+
+    }
+
+    #createBoostCards(boostManager) {
 
         for (const boost of boostManager.getBoosts()) {
 
@@ -27,43 +48,91 @@ export default class BoostUI {
 
             li.classList.add("boost-card");
 
+            li.dataset.price = boost.getPrice();
+
             li.innerHTML = `
-                <img src="${boost.getIcon()}" alt="${boost.getName()}">
+                            <img src="${boost.getIcon()}" alt="${boost.getName()}">
 
-                <div class="boost-info">
-                    <strong>${boost.getName()}</strong>
-                    <small>${boost.getDescription()}</small>
-                </div>
+                            <div class="boost-info">
 
-                <button class="buy-button">
-                    Buy<br>
-                    <span>${boost.getPrice()} 🪙</span>
-                </button>`
-            ;
+                                <strong>
+                                    ${boost.getName()}
+                                </strong>
 
-            const button = li.querySelector("button");
+                                <div class="boost-tooltip">
 
-            button.addEventListener("click", () => {
+                                    <strong>${boost.getName()}</strong>
 
-                const purchased = boostManager.buy(boost, game);
+                                    <span>
+                                        ${boost.getDescription()}
+                                    </span>
 
-                if (!purchased) {
+                                    <span>
+                                        Price : ${boost.getPrice()} 🪙
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                            <span class="boost-price">
+                                ${boost.getPrice()} 🪙
+                            </span>
+                        `;
+
+            li.addEventListener("click", () => {
+
+                const success = this.#onBuy(boost);
+
+                if (!success) {
                     this.#showMessage("Not enough coins!");
-                    return;
                 }
 
-                this.render(boostManager.wallet());
+            });
+
+            li.addEventListener("mouseenter", (event) => {
+
+                this.#showTooltip(boost, event);
+
+            });
+
+            li.addEventListener("mousemove", (event) => {
+
+                this.#moveTooltip(event);
+
+            });
+
+            li.addEventListener("mouseleave", () => {
+
+                this.#hideTooltip();
+
             });
 
             this.#boostList.appendChild(li);
+
         }
+
     }
+
+
+
 
     render(wallet) {
-
         this.#moneyCount.textContent = wallet.balance();
 
+        for (const card of this.#boostList.children) {
+            const price = Number(card.dataset.price);
+
+            if (wallet.balance() < price) {
+                card.classList.add("disabled");
+            } else {
+                card.classList.remove("disabled");
+            }
+
+        }
+
     }
+
 
     #showMessage(message) {
 
@@ -77,7 +146,42 @@ export default class BoostUI {
 
             this.#message.classList.remove("visible");
 
-        }, 1800);
+        }, 1000);
+
+    }
+
+    
+    #showTooltip(boost, event) {
+
+        this.#tooltip.innerHTML = `
+            <strong>${boost.getName()}</strong>
+            <span>${boost.getDescription()}</span>
+            <span>Price : ${boost.getPrice()} 🪙</span>
+        `;
+
+        this.#tooltip.classList.add("visible");
+
+        this.#moveTooltip(event);
+
+    }
+
+
+    #moveTooltip(event) {
+
+        const offset = 15;
+
+        this.#tooltip.style.left =
+            `${event.clientX + offset}px`;
+
+        this.#tooltip.style.top =
+            `${event.clientY + offset}px`;
+
+    }
+
+
+    #hideTooltip() {
+
+        this.#tooltip.classList.remove("visible");
 
     }
 

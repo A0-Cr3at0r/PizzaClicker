@@ -6,8 +6,10 @@ export default class PizzaPackBoost extends InstantBoost {
         super("+100 pizzas", 1000, icon, "add 100 pizza");
     }
 
-    apply(game){
-        game.addPizzas(100);
+    apply(game) {
+
+        return game.addPizzas(100);
+
     }
 
 }

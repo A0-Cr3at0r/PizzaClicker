@@ -6,8 +6,10 @@ export default class SlicePackBoost extends InstantBoost {
         super("+100 slices", 100, icon, "add 100 slices");
     }
 
-    apply(game){
-        game.addSlices(100);
+    apply(game) {
+
+        return game.addSlices(100);
+
     }
 
 }

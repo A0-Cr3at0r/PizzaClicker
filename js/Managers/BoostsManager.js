@@ -1,6 +1,8 @@
 import ModifierBoost from "../Boosts/ModifierBoosts/ModifierBoost.js";
 import ActiveBoost from "../Boosts/ActiveBoosts/ActiveBoost.js";
 import InstantBoost from "../Boosts/InstantBoosts/InstantBoost.js";
+import PercentBoost from "../Boosts/ModifierBoosts/PercentBoost.js";
+import MultiplierBoost from "../Boosts/ModifierBoosts/MultiplierBoost.js";
 
 export default class BoostManager {
     #wallet;
@@ -26,23 +28,28 @@ export default class BoostManager {
     }
 
     buy(boost, game) {
+
         if (!this.#wallet.pay(boost.getPrice())) {
-            return false;
+            return null;
         }
 
         if (boost instanceof InstantBoost) {
-            boost.apply(game);
+            return boost.apply(game);
         }
 
-        else if (boost instanceof ModifierBoost) {
+        if (boost instanceof ModifierBoost) {
             this.#modifierBoosts.push(boost);
         }
 
-        else if (boost instanceof ActiveBoost) {
+        if (boost instanceof ActiveBoost) {
             this.#activeBoosts.push(boost);
         }
 
-        return true;
+        return  {   
+                    click: false,
+                    slicesSold: 0,
+                    pizzasCooked: 0
+                };;
     }
 
     computeGain(baseValue) {

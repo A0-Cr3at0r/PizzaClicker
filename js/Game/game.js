@@ -80,10 +80,10 @@ boostManager.register(
 
 boostManager.register(
     new MultiplierBoost(
-        "x2 Revenue",
+        "x2 Slices",
         Prices.x2,
         Icons.x2,
-        "Double your revenue for 60 seconds",
+        "Double your slices for 60 seconds",
         Multipliers.x2,
         Durations.x2
     )
@@ -91,10 +91,10 @@ boostManager.register(
 
 boostManager.register(
     new MultiplierBoost(
-        "x5 Revenue",
+        "x5 Slices",
         Prices.x5,
         Icons.x5,
-        "Multiply your revenue by 5 for 30 seconds",
+        "Multiply your slices by 5 for 30 seconds",
         Multipliers.x5,
         Durations.x5
     )
@@ -127,11 +127,14 @@ const pizzaCanvas = document.getElementById("pizzaCanvas");
 
 const pizzaUI = new PizzaUI(pizzaCanvas);
 const metricUI = new MetricUI();
-const boostUI = new BoostUI(boostManager, wallet, game);
+const boostUI = new BoostUI(
+    boostManager,
+    purchaseBoost
+);
 
-pizzaUI.update(game);
-metricUI.render(metricManager);
-boostUI.render(wallet);
+refreshUI();
+
+
 
 //-----------------------------------------------------
 // Inputs
@@ -149,39 +152,68 @@ document
 // Game actions
 //-----------------------------------------------------
 
-function performClick() {
+function refreshUI() {
 
-    const result = game.cook();
+    pizzaUI.update(game);
+    metricUI.render(metricManager);
+    boostUI.render(wallet);
 
-    metricManager.recordClick();
+}
 
-    if (result.sliceSold) {
+function applyResult(result) {
 
-        metricManager.recordSlice(result.slicesSold);
+    if (result.click) {
+        metricManager.recordClick();
+    }
 
+    if (result.slicesSold > 0) {
         const gain = boostManager.computeGain(
             result.slicesSold * Economy.sliceValue
         );
 
         wallet.add(gain);
 
-        audioManager.click();
+    }
 
+    metricManager.recordSlice(result.slicesSold);
+    metricManager.recordPizza(result.pizzasCooked);
+
+    refreshUI();
+
+}
+
+function performClick() {
+
+    const result = game.cook();
+
+    result.click = true;
+
+    applyResult(result);
+
+    if (result.sliceSold) {
+        audioManager.click();
     }
 
     if (result.pizzaCooked) {
-
-        metricManager.recordPizza();
-
         audioManager.cook();
-
     }
 
-    pizzaUI.update(game);
     pizzaUI.pizzaClickAnimation();
+}
 
-    metricUI.render(metricManager);
-    boostUI.render(wallet);
+function purchaseBoost(boost) {
+
+    const result = boostManager.buy(boost, game);
+
+    if (result === null) {
+        audioManager.playPayError();
+        return false;
+    }
+
+    audioManager.playPaySuccess();
+    applyResult(result);
+
+    return true;
 
 }
 
@@ -218,8 +250,7 @@ function gameLoop(currentTime) {
 
     }
 
-    metricUI.render(metricManager);
-    boostUI.render(wallet);
+    refreshUI();
 
     requestAnimationFrame(gameLoop);
 

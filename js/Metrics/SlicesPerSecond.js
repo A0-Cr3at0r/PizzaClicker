@@ -7,8 +7,8 @@ export default class SlicesPerSecond extends Metric {
     #value = 0;
     #name = "Slices Per Second";
 
-    recordSlice() {
-        this.#slices++;
+    recordSlice(slices = 1) {
+        this.#slices += slices;
     }
 
     update(dt) {

@@ -1,7 +1,7 @@
 export default class Wallet {
     #balance;
 
-    constructor(initialBalance = 100000000) {
+    constructor(initialBalance = 10) {
         this.#balance = initialBalance;
     }
 

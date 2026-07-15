@@ -11,76 +11,310 @@ main {
     gap: 2rem;
 }
 
+/* -----------------------------------------------------
+   Boosts
+----------------------------------------------------- */
+
 .boosts {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    background-color: #fee488;
-    border-radius: 10%;
-    
+
+    display:flex;
+    flex-direction:column;
+
+    width:340px;
+    height:450px;
+
+    padding:1rem;
+
+    background-color:#fee488;
+    border-radius:20px;
+
+    box-sizing:border-box;
+
 }
 
-.boosts ul {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 0.8rem;
+
+.boosts h2 {
+
+    margin:0;
+
+    flex-shrink:0;
+
+    text-align:center;
+
 }
 
-.boosts li {
-    display: grid;
-    grid-template-columns: 0.5fr 1.5fr 0.5fr;
-    align-items: center;
-    text-align: center;
-    margin-left: 5%;
-    margin-right: 5%;
+.boost-container {
+
+    flex:1;
+
+    min-height:0;
+
+    overflow-y:auto;
+
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+
+    background-color: #e0c460;
+
 }
 
-.boosts li img {
-    width: 50px;
-    height: 50px;
-    margin-left: 10%;
-    border-radius: 25%;
+
+.boost-container ul {
+
+    display:flex;
+    flex-direction:column;
+
+    gap:.8rem;
+
+    list-style:none;
+
+    padding:0;
+    margin:1rem 0;
+
 }
 
-.buy-button {
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-    font-weight: bold;
-
-    border: none;
-    border-radius: 10px;
-
-    background-color: #03e459;
-    color: rgb(249, 239, 239);
-
-    cursor: pointer;
-    transition: transform 0.2s, background-color 0.2s;
-    margin-right: 10%;
-    text-align: center;
-
-    min-width: 100px;
+.boost-container::-webkit-scrollbar {
+    width: 10px;
 }
 
-.buy-button:hover {
-    background-color: #025e20;
-    transform: scale(1.05);
+.boost-container::-webkit-scrollbar-track {
+    background:#f5a73a;
+    border-radius:10px;
 }
 
-.buy-button:active {
-    transform: scale(0.95);
+.boost-container::-webkit-scrollbar-thumb {
+    background:#d17d08;
+    border-radius:10px;
 }
 
-.boosts p {
-    margin: 0;
-    font-size: 1rem;
-    font-weight: bold;
+.boost-container::-webkit-scrollbar-thumb:hover {
+    background:#673d03;
 }
 
-.boosts p:last-child {
-    margin-bottom: 5%;
+.boost-card {
+    position: relative;
+
+    display:grid;
+
+    grid-template-columns:60px 1fr auto;
+
+    align-items:center;
+
+    gap:1rem;
+
+    padding:.8rem;
+
+    background:white;
+
+    border-radius:15px;
+
+    cursor:pointer;
+
+    user-select:none;
+
+    transition:
+        transform .15s,
+        box-shadow .15s;
+
 }
+
+.boost-card:hover {
+
+    transform:translateY(-3px);
+
+    box-shadow:
+        0 5px 12px rgba(0,0,0,.25);
+
+}
+
+.boost-card:active {
+
+    transform:scale(.97);
+
+}
+
+.boost-card img {
+
+    width:55px;
+    height:55px;
+
+    border-radius:12px;
+
+}
+
+.boost-card.disabled {
+
+    cursor:not-allowed;
+
+    background:#ececec;
+
+}
+
+
+.boost-card.disabled img {
+
+    filter:grayscale(100%);
+    opacity:.45;
+
+}
+
+
+.boost-card.disabled .boost-info {
+    opacity:.55;
+}
+
+
+.boost-card.disabled .boost-price {
+
+    background:#9a9a9a;
+    color:#efefef;
+
+}
+
+.boost-tooltip-global {
+
+    position:fixed;
+
+    width:220px;
+
+    padding:.8rem;
+
+    background:#333;
+
+    color:white;
+
+    border-radius:12px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:.4rem;
+
+    text-align:center;
+
+    font-size:.85rem;
+
+    pointer-events:none;
+
+    opacity:0;
+
+    visibility:hidden;
+
+    transition:
+        opacity .15s ease;
+
+    z-index:9999;
+
+}
+
+
+.boost-info strong {
+    font-size:1rem;
+}
+
+
+.boost-info small {
+    font-size:.85rem;
+    color:#4b4b4b;
+}
+
+
+.boost-tooltip {
+
+    position:absolute;
+
+    left:50%;
+    top:120%;
+
+    transform:translateX(-50%);
+
+    width:200px;
+
+    padding:.8rem;
+
+    background:#333;
+
+    color:white;
+
+    border-radius:12px;
+
+    display:flex;
+    flex-direction:column;
+
+    gap:.4rem;
+
+    text-align:center;
+
+    font-size:.85rem;
+
+    opacity:0;
+
+    visibility:hidden;
+
+    transition:
+        opacity .2s ease,
+        visibility .2s ease;
+
+    z-index:1000;
+
+}
+
+.boost-tooltip-global.visible {
+
+    opacity:1;
+
+    visibility:visible;
+
+}
+
+
+.boost-price {
+
+    background:#03e459;
+
+    color:white;
+
+    font-weight:bold;
+
+    padding:.5rem .7rem;
+
+    border-radius:20px;
+
+    white-space:nowrap;
+
+}
+
+.wallet {
+
+    flex-shrink:0;
+
+}
+
+
+.boost-message {
+
+    margin:0;
+
+    font-weight:bold;
+
+    color:#d60000;
+
+    opacity:0;
+
+    transition:opacity .4s ease;
+
+}
+
+.boost-message.visible {
+
+    opacity:1;
+
+}
+
+/* -----------------------------------------------------
+   Metrics
+----------------------------------------------------- */
 
 .metrics {
     background-color: #aeb6eb;
@@ -105,6 +339,10 @@ main {
 .metrics p:last-child {
     margin-bottom: 15%;
 }
+
+/* -----------------------------------------------------
+   Stats
+----------------------------------------------------- */
 
 main .stats {
     width: 70%;
@@ -159,6 +397,10 @@ main .stats button:hover {
 main .stats button:active {
     transform: scale(0.95);
 }
+
+/* -----------------------------------------------------
+   Pizzas Canvas
+----------------------------------------------------- */
 
 #pizzaCanvas{
     width: 70%;

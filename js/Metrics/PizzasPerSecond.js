@@ -7,8 +7,8 @@ export default class PizzasPerSecond extends Metric {
     #value = 0;
     #name = "Pizzas Per Second";
 
-    recordPizza() {
-        this.#pizzas++;
+    recordPizza(pizzas = 1) {
+        this.#pizzas += pizzas;
     }
 
     update(dt) {
