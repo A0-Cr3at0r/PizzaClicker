@@ -10,6 +10,7 @@ export default class ClickManager {
     #wallet;
     #boostManager;
     #metricManager;
+    
 
 
 
@@ -33,7 +34,7 @@ export default class ClickManager {
     click(click = 0) 
     {
 
-        const actions = this.#boostManager.computeActions();
+        const actions = this.#boostManager.update();
 
         actions.addClick(click);
 

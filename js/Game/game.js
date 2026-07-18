@@ -334,12 +334,11 @@ function gameLoop(currentTime) {
     );
 
 
-    const actions =
-        boostManager.update(
+    boostManager.setDeltaTimme(
             deltaTime
         );
-    
 
+        
     const result =
         clickManager.click();
 

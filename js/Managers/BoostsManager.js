@@ -12,6 +12,7 @@ export default class BoostManager {
     #moneyBoosts;
     #activeBoosts;
     #instantBoosts;
+    #deltaTime;
 
 
 
@@ -102,15 +103,11 @@ export default class BoostManager {
     }
 
 
-
-
-
-    update(deltaTime) {
-
+    update() {
 
         this.#sliceBoosts =
             this.#sliceBoosts.filter(
-                boost => boost.update(deltaTime) !== false
+                boost => boost.update(this.#deltaTime) !== false
             );
 
 
@@ -122,7 +119,7 @@ export default class BoostManager {
             this.#activeBoosts.reduce(
                 (actions, boost) =>
                     actions.merge(
-                        boost.update(deltaTime)
+                        boost.update(this.#deltaTime)
                     ),
                 actions
             );
@@ -133,7 +130,9 @@ export default class BoostManager {
 
     }
 
-
+    setDeltaTimme(deltaTime) {
+        this.#deltaTime = deltaTime;
+    }
 
 
 
