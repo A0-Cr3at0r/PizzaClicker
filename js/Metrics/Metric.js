@@ -7,4 +7,10 @@ export default class Metric {
     getValue() {}
     getName() {}
 
+    getState() {
+        return null;
+    }
+
+    loadState(state) {}
+
 }

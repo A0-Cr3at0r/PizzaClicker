@@ -16,4 +16,12 @@ export default class TotalSlices extends Metric {
         return this.#name;
     }
 
+    getState() {
+        return this.#total;
+    }
+
+    loadState(value) {
+        this.#total = value;
+    }
+
 }

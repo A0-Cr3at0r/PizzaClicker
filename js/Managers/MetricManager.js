@@ -93,4 +93,49 @@ export default class MetricManager {
 
     }
 
+    //=========================
+    // Saving
+    //=========================
+
+    getState() {
+
+        const state = {};
+
+
+        for(const metric of this.#metrics.values()) {
+
+            state[
+                metric.getName()
+            ] = metric.getValue();
+
+        }
+
+
+        return state;
+
+    }
+
+
+    loadState(state) {
+
+        for(const metric of this.#metrics.values()) {
+
+            const value =
+                state[
+                    metric.getName()
+                ];
+
+
+            if(value !== undefined) {
+
+                metric.setValue(value);
+
+            }
+
+        }
+
+    }
+
+
+
 }

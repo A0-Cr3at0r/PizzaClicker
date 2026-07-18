@@ -79,7 +79,29 @@ export default class Wallet {
 
     }
 
+    //=========================
+    // Saving
+    //=========================
 
+    getState() {
+
+        return {
+
+            balance:
+                this.#balance
+
+        };
+
+    }
+
+
+
+    loadState(state) {
+
+        this.#balance =
+            state.balance;
+
+    }
 
     //=========================
     // Utility
