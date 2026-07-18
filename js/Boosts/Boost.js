@@ -1,3 +1,5 @@
+import BoostActions from "./BoostAction.js";
+
 export default class Boost {
     #name;
     #price;
@@ -9,6 +11,9 @@ export default class Boost {
         this.#price = price;
         this.#icon = icon;
         this.#description = description;
+    }
+
+    applyEffect(boostActions = new BoostActions()) {
     }
 
     getName() {

@@ -1,94 +1,157 @@
-import ModifierBoost from "../Boosts/ModifierBoosts/ModifierBoost.js";
 import ActiveBoost from "../Boosts/ActiveBoosts/ActiveBoost.js";
 import InstantBoost from "../Boosts/InstantBoosts/InstantBoost.js";
-import PercentBoost from "../Boosts/ModifierBoosts/PercentBoost.js";
-import MultiplierBoost from "../Boosts/ModifierBoosts/MultiplierBoost.js";
+import MoneyBoost from "../Boosts/ModifierBoosts/MoneyBoost.js";
+import SlicesBoost from "../Boosts/ModifierBoosts/SlicesBoost.js";
+import BoostActions from "../Boosts/BoostAction.js";
+
 
 export default class BoostManager {
-    #wallet;
 
-    #boosts;
 
-    #modifierBoosts;
+    #sliceBoosts;
+    #moneyBoosts;
     #activeBoosts;
+    #instantBoosts;
 
-    constructor(wallet) {
-        this.#wallet = wallet;
 
-        this.#boosts = [];
 
-        this.#modifierBoosts = [];
+    constructor() {
+
+        this.#sliceBoosts = [];
+        this.#moneyBoosts = [];
         this.#activeBoosts = [];
+        this.#instantBoosts = [];
 
     }
 
-    register(boost) {
-        this.#boosts.push(boost);
 
-    }
 
-    buy(boost, game) {
+    buy(boost) {
 
-        if (!this.#wallet.pay(boost.getPrice())) {
-            return null;
+
+        if(boost instanceof InstantBoost) {
+
+            this.#instantBoosts.push(boost);
+
         }
 
-        if (boost instanceof InstantBoost) {
-            return boost.apply(game);
+
+        else if(boost instanceof MoneyBoost) {
+
+            this.#moneyBoosts.push(boost);
+
         }
 
-        if (boost instanceof ModifierBoost) {
-            this.#modifierBoosts.push(boost);
+
+        else if(boost instanceof SlicesBoost) {
+
+            this.#sliceBoosts.push(boost);
+
         }
 
-        if (boost instanceof ActiveBoost) {
+
+        else if(boost instanceof ActiveBoost) {
+
             this.#activeBoosts.push(boost);
+
         }
 
-        return  {   
-                    click: false,
-                    slicesSold: 0,
-                    pizzasCooked: 0
-                };;
-    }
 
-    computeGain(baseValue) {
-        let value = baseValue;
-
-        for (const boost of this.#modifierBoosts) {
-            value = boost.modify(value);
-        }
-
-        return value;
+        return this.computeActions();
 
     }
 
-    update(deltaTime) {
-        const actions = [];
 
-        this.#modifierBoosts =
-            this.#modifierBoosts.filter(boost => boost.update(deltaTime) !== false);
 
-        this.#activeBoosts = this.#activeBoosts.filter(boost => {
-            const boostActions = boost.update(deltaTime);
 
-            if (boostActions !== false) {
-                actions.push(...boostActions);
-                return true;
-            }
 
-            return false;
-        });
+    computeActions() {
+
+
+        let actions =
+            new BoostActions();
+
+
+
+        actions =
+            this.#sliceBoosts.reduce(
+                (actions, boost) =>
+                    boost.applyEffect(actions),
+                actions
+            );
+
+
+
+        actions =
+            this.#moneyBoosts.reduce(
+                (actions, boost) =>
+                    boost.applyEffect(actions),
+                actions
+            );
+
+        actions =
+            this.#instantBoosts.reduce(
+                (actions, boost) =>
+                    actions.merge(
+                        boost.applyEffect()
+                    ),
+                actions
+            );
+
+        this.#instantBoosts = [];
+
+
 
         return actions;
+
     }
+
+
+
+
+
+    update(deltaTime) {
+
+
+        this.#sliceBoosts =
+            this.#sliceBoosts.filter(
+                boost => boost.update(deltaTime) !== false
+            );
+
+
+
+        let actions =
+            this.computeActions();
+
+        actions =
+            this.#activeBoosts.reduce(
+                (actions, boost) =>
+                    actions.merge(
+                        boost.update(deltaTime)
+                    ),
+                actions
+            );
+
+
+
+        return actions;
+
+    }
+
+
+
+
 
     getBoosts() {
-        return this.#boosts;
+
+        return [
+            ...this.#moneyBoosts,
+            ...this.#sliceBoosts,
+            ...this.#activeBoosts,
+            ...this.#instantBoosts
+        ];
+
     }
 
-    wallet() {
-        return this.#wallet;
-    }
 
 }

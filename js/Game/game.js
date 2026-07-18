@@ -1,257 +1,373 @@
 import { Game } from "./GameClass.js";
 
+import Pizza from "../Pizza/Pizza.js";
+
 import {
     Icons,
     Prices,
     Durations,
     Multipliers,
     AutoClickers,
-    Economy,
     GameConfig
 } from "./Assets.js";
 
+
+// UI
 import { PizzaUI } from "../UI/PizzaUI.js";
 import MetricUI from "../UI/MetricUI.js";
 import BoostUI from "../UI/BoostUI.js";
+import UIManager from "../Managers/UIMangers.js";
 
+
+// Managers
 import { AudioManager } from "../Managers/AudioManager.js";
 import MetricManager from "../Managers/MetricManager.js";
 import BoostManager from "../Managers/BoostsManager.js";
+import ClickManager from "../Managers/ClickManager.js";
+
+
+// Wallet
 import Wallet from "../Wallet/Wallet.js";
 
+
+// Metrics
 import TotalClicks from "../Metrics/TotalClicks.js";
 import TotalSlices from "../Metrics/TotalSlices.js";
 import ClicksPerSecond from "../Metrics/ClicksPerSecond.js";
 import SlicesPerSecond from "../Metrics/SlicesPerSecond.js";
 import PizzasPerSecond from "../Metrics/PizzasPerSecond.js";
 
-import PercentBoost from "../Boosts/ModifierBoosts/PercentBoost.js";
-import MultiplierBoost from "../Boosts/ModifierBoosts/MultiplierBoost.js";
+
+// Boosts
+import MoneyBoost from "../Boosts/ModifierBoosts/MoneyBoost.js";
+import SlicesBoost from "../Boosts/ModifierBoosts/SlicesBoost.js";
+
 import SlicePackBoost from "../Boosts/InstantBoosts/SlicePackBoosts.js";
 import PizzaPackBoost from "../Boosts/InstantBoosts/PizzaPackBoost.js";
-import AutoClickerBoost from "../Boosts/ActiveBoosts/AutoClicker.js";
 
-import { BoostAction } from "../Boosts/BoostAction.js";
+import AutoClickerBoost from "../Boosts/ActiveBoosts/AutoClicker.js";
+import { GameEvent } from "./GameEvents.js";
+
+
 
 //-----------------------------------------------------
 // Game
 //-----------------------------------------------------
 
-const game = new Game(
-    0,
-    GameConfig.totalSlices
-);
+
+const currentPizza =
+    new Pizza(
+        GameConfig.name,
+        GameConfig.totalSlices,
+        GameConfig.price,
+        GameConfig.imageSrc
+    );
+
+
+
+const game =
+    new Game(
+        0,
+        currentPizza
+    );
+
+
 
 //-----------------------------------------------------
 // Managers
 //-----------------------------------------------------
 
-const wallet = new Wallet();
 
-const metricManager = new MetricManager();
+const wallet =
+    new Wallet(10000, currentPizza.getPrice());
 
-const boostManager = new BoostManager(wallet);
 
-const audioManager = new AudioManager();
+
+const metricManager =
+    new MetricManager();
+
+
+
+const boostManager =
+    new BoostManager();
+
+
+
+const clickManager =
+    new ClickManager(
+        game,
+        wallet,
+        boostManager,
+        metricManager
+    );
+
+
+
+const audioManager =
+    new AudioManager();
+
+
 
 //-----------------------------------------------------
 // Metrics
 //-----------------------------------------------------
 
-metricManager.addMetric(new TotalClicks());
-metricManager.addMetric(new TotalSlices());
-metricManager.addMetric(new ClicksPerSecond());
-metricManager.addMetric(new SlicesPerSecond());
-metricManager.addMetric(new PizzasPerSecond());
+
+metricManager.addMetric(
+    new TotalClicks()
+);
+
+
+metricManager.addMetric(
+    new TotalSlices()
+);
+
+
+metricManager.addMetric(
+    new ClicksPerSecond()
+);
+
+
+metricManager.addMetric(
+    new SlicesPerSecond()
+);
+
+
+metricManager.addMetric(
+    new PizzasPerSecond()
+);
 
 //-----------------------------------------------------
 // Boost registration
 //-----------------------------------------------------
 
-boostManager.register(
-    new PercentBoost(
-        "+20% Revenue",
-        Prices.percent,
-        Icons.percent,
-        "Increase all revenues by 20%",
-        Multipliers.percent
-    )
-);
+const boosts = [new MoneyBoost(
+                    "+20% Revenue",
+                    Prices.percent,
+                    Icons.percent,
+                    "Increase all revenues by 20%",
+                    Multipliers.percent
+                ),
 
-boostManager.register(
-    new MultiplierBoost(
-        "x2 Slices",
-        Prices.x2,
-        Icons.x2,
-        "Double your slices for 60 seconds",
-        Multipliers.x2,
-        Durations.x2
-    )
-);
+                new SlicesBoost(
+                    "x2 Slices",
+                    Prices.x2,
+                    Icons.x2,
+                    "Double your slices for 60 seconds",
+                    Multipliers.x2,
+                    Durations.x2
+                ),
 
-boostManager.register(
-    new MultiplierBoost(
-        "x5 Slices",
-        Prices.x5,
-        Icons.x5,
-        "Multiply your slices by 5 for 30 seconds",
-        Multipliers.x5,
-        Durations.x5
-    )
-);
+                new SlicesBoost(
+                    "x5 Slices",
+                    Prices.x5,
+                    Icons.x5,
+                    "Multiply your slices by 5 for 30 seconds",
+                    Multipliers.x5,
+                    Durations.x5
+                ),
 
-boostManager.register(
-    new SlicePackBoost(
-        Icons.slicePack
-    )
-);
+                new SlicePackBoost(
+                    Icons.slicePack
+                ),
 
-boostManager.register(
-    new PizzaPackBoost(
-        Icons.pizzaPack
-    )
-);
+                new PizzaPackBoost(
+                    Icons.pizzaPack
+                ),
 
-boostManager.register(
-    new AutoClickerBoost(
-        Icons.autoClicker,
-        AutoClickers.defaultClicksPerSecond
-    )
-);
+
+                new AutoClickerBoost(
+                    Icons.autoClicker,
+                    AutoClickers.defaultClicksPerSecond
+                )
+]
+
+
 
 //-----------------------------------------------------
 // UI
 //-----------------------------------------------------
 
-const pizzaCanvas = document.getElementById("pizzaCanvas");
 
-const pizzaUI = new PizzaUI(pizzaCanvas);
-const metricUI = new MetricUI();
-const boostUI = new BoostUI(
-    boostManager,
-    purchaseBoost
-);
+const pizzaUI =
+    new PizzaUI(
+        document.getElementById("pizzaCanvas"),
+        currentPizza.getImage()
+    );
 
-refreshUI();
 
+
+const metricUI =
+    new MetricUI();
+
+
+
+const boostUI =
+    new BoostUI(
+        boosts,
+        purchaseBoost
+    );
+
+
+    boostUI.render(wallet.balance());
+
+
+
+const uiManager =
+    new UIManager(
+        pizzaUI,
+        metricUI,
+        boostUI
+    );
 
 
 //-----------------------------------------------------
-// Inputs
+// User inputs
 //-----------------------------------------------------
+
 
 document
     .getElementById("pizzaCanvas")
-    .addEventListener("click", performClick);
+    .addEventListener(
+        "click",
+        performClick
+    );
+
+
 
 document
     .getElementById("cookButton")
-    .addEventListener("click", performClick);
+    .addEventListener(
+        "click",
+        performClick
+    );
+
+
 
 //-----------------------------------------------------
-// Game actions
+// Gameplay actions
 //-----------------------------------------------------
 
-function refreshUI() {
-
-    pizzaUI.update(game);
-    metricUI.render(metricManager);
-    boostUI.render(wallet);
-
-}
-
-function applyResult(result) {
-
-    if (result.click) {
-        metricManager.recordClick();
-    }
-
-    if (result.slicesSold > 0) {
-        const gain = boostManager.computeGain(
-            result.slicesSold * Economy.sliceValue
-        );
-
-        wallet.add(gain);
-
-    }
-
-    metricManager.recordSlice(result.slicesSold);
-    metricManager.recordPizza(result.pizzasCooked);
-
-    refreshUI();
-
-}
 
 function performClick() {
 
-    const result = game.cook();
 
-    result.click = true;
+    const result =
+        clickManager.click();
 
-    applyResult(result);
 
-    if (result.sliceSold) {
-        audioManager.click();
-    }
+    uiManager.consumeGameResult(
+        result
+    );
 
-    if (result.pizzaCooked) {
-        audioManager.cook();
-    }
+    audioManager.consumeGameResult(
+        result
+    );
 
-    pizzaUI.pizzaClickAnimation();
+    wallet.sell(result.getPizzasCooked());
+
 }
 
+
+
 function purchaseBoost(boost) {
+    
+    const result =
+        clickManager.buy(boost);
 
-    const result = boostManager.buy(boost, game);
 
-    if (result === null) {
-        audioManager.playPayError();
-        return false;
-    }
+    uiManager.consumeGameResult(
+        result
+    );
 
-    audioManager.playPaySuccess();
-    applyResult(result);
+
+    audioManager.consumeGameResult(
+        result
+    );
+
 
     return true;
 
 }
 
+
+
 //-----------------------------------------------------
 // Main loop
 //-----------------------------------------------------
 
-let previousTime = performance.now();
 
-requestAnimationFrame(gameLoop);
+let previousTime =
+    performance.now();
+
+
+
+requestAnimationFrame(
+    gameLoop
+);
+
+
 
 function gameLoop(currentTime) {
 
-    const deltaTime = (currentTime - previousTime) / 1000;
+    const deltaTime =
+        (currentTime - previousTime) / 1000;
+
+
 
     previousTime = currentTime;
 
-    metricManager.update(deltaTime);
 
-    const actions = boostManager.update(deltaTime);
 
-    for (const action of actions) {
+    metricManager.update(
+        deltaTime
+    );
 
-        switch (action.type) {
 
-            case BoostAction.AUTO_CLICK:
 
-                for (let i = 0; i < action.count; i++) {
-                    performClick();
-                }
+    const actions =
+        boostManager.update(
+            deltaTime
+        );
+    
 
-                break;
-        }
+    if(!actions.isEmpty()) {
+        const result =
+            clickManager.click(actions);
+
+            if (result.getMoneyEarned() === 5) {
+                console.log(result.getMoneyEarned());            }
+
+        // if (result.getPizzasCooked() != 0) {
+        //     console.log("Pizzas");
+        //     console.log(result.getPizzaCount());
+        //     console.log(result.getTotalSlices());
+        //     console.log(result.getRemainingSlices());
+        // }
+
+        
+
+        // const events = result.getEvents();
+        // for (const event of events) {
+        //     if (event === GameEvent.CLICK) {
+        //         console.log("click");
+        //     }
+        // }
+
+        audioManager.consumeGameResult(
+            result
+        );
+
+        uiManager.consumeGameResult(
+            result
+        );
 
     }
 
-    refreshUI();
 
-    requestAnimationFrame(gameLoop);
+
+    requestAnimationFrame(
+        gameLoop
+    );
 
 }

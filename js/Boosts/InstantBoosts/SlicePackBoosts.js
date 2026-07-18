@@ -1,4 +1,5 @@
 import InstantBoost from "./InstantBoost.js";
+import BoostActions from "../BoostAction.js";
 
 export default class SlicePackBoost extends InstantBoost {
 
@@ -6,10 +7,11 @@ export default class SlicePackBoost extends InstantBoost {
         super("+100 slices", 100, icon, "add 100 slices");
     }
 
-    apply(game) {
+    applyEffect(boostActions = new BoostActions()) {
 
-        return game.addSlices(100);
+        boostActions.addSlices(100);
 
+        return boostActions
     }
 
 }

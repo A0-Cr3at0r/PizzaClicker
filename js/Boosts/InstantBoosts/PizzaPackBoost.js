@@ -1,4 +1,5 @@
 import InstantBoost from "./InstantBoost.js";
+import BoostActions from "../BoostAction.js";
 
 export default class PizzaPackBoost extends InstantBoost {
 
@@ -6,9 +7,11 @@ export default class PizzaPackBoost extends InstantBoost {
         super("+100 pizzas", 1000, icon, "add 100 pizza");
     }
 
-    apply(game) {
+    applyEffect(boostActions = new BoostActions()) {
 
-        return game.addPizzas(100);
+        boostActions.addPizzas(100);
+        
+        return boostActions
 
     }
 

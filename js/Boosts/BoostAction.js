@@ -1,5 +1,141 @@
-export  const BoostAction = Object.freeze({
-    AUTO_CLICK: "AUTO_CLICK",
-    ADD_SLICES: "ADD_SLICES"
-});
+export default class BoostActions {
+    #click;
+    #slicesAdded;
+    #pizzaAdded;
+    #sliceMultiplier;
+    #moneyMultiplier;
+
+    constructor(
+        click = 0,
+        slicesAdded = 0,
+        pizzaAdded = 0,
+        sliceMultiplier = 1,
+        moneyMultiplier = 1
+    ) {
+        this.#click = click;
+        this.#slicesAdded = slicesAdded;
+        this.#pizzaAdded = pizzaAdded;
+        this.#sliceMultiplier = sliceMultiplier;
+        this.#moneyMultiplier = moneyMultiplier;
+    }
+
+    //=========================
+    // Getters
+    //=========================
+
+    getClick() {
+        return this.#click;
+    }
+
+    getSlicesAdded() {
+        return this.#slicesAdded;
+    }
+
+    getPizzaAdded() {
+        return this.#pizzaAdded;
+    }
+
+    getSliceMultiplier() {
+        return this.#sliceMultiplier;
+    }
+
+    getMoneyMultiplier() {
+        return this.#moneyMultiplier;
+    }
+
+    //=========================
+    // Setters
+    //=========================
+
+    setClick(click) {
+        this.#click = click;
+    }
+
+    setSlicesAdded(slicesAdded) {
+        this.#slicesAdded = slicesAdded;
+    }
+
+    setPizzaAdded(pizzaAdded) {
+        this.#pizzaAdded = pizzaAdded;
+    }
+
+    setSliceMultiplier(sliceMultiplier) {
+        this.#sliceMultiplier = sliceMultiplier;
+    }
+
+    setMoneyMultiplier(moneyMultiplier) {
+        this.#moneyMultiplier = moneyMultiplier;
+    }
+
+    //=========================
+    // Adders
+    //=========================
+
+    addClick(click = 1) {
+        this.#click += click;
+    }
+
+    addSlices(slices) {
+        this.#slicesAdded += slices;
+    }
+
+    addPizzas(pizzas) {
+        this.#pizzaAdded += pizzas;
+    }
+
+    addMoneyMultiplier(multiplier) {
+        this.#moneyMultiplier += multiplier;
+        this.#moneyMultiplier = (Math.round(this.#moneyMultiplier * 10)) / 10;
+    }
+
+    //=========================
+    // Multipliers
+    //=========================
+
+    multiplySlices(multiplier) {
+        this.#sliceMultiplier *= multiplier;
+    }
+
+    //=========================
+    // Merge
+    //=========================
+
+   merge(other) {
+
+    this.addClick(other.getClick());
+    this.addSlices(other.getSlicesAdded());
+    this.addPizzas(other.getPizzaAdded());
+
+    this.addMoneyMultiplier(other.getMoneyMultiplier());
+    this.multiplySlices(other.getSliceMultiplier());
+
+    return this;
+
+}
+
+    //=========================
+    // Reset
+    //=========================
+
+    reset() {
+        this.#click = 0;
+        this.#slicesAdded = 0;
+        this.#pizzaAdded = 0;
+        this.#sliceMultiplier = 1;
+        this.#moneyMultiplier = 1;
+    }
+
+    //=========================
+    // State check
+    //=========================
+
+    isEmpty() {
+        return (
+            this.#click === 0 &&
+            this.#slicesAdded === 0 &&
+            this.#pizzaAdded === 0 && 
+            this.#moneyMultiplier === 1
+        );
+    }
+}
 

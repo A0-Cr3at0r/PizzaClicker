@@ -1,79 +1,199 @@
+import Pizza from "../Pizza/Pizza.js";
+import GameResult from "./GameResult.js";
+import { GameEvent } from "./GameEvents.js";
+
+
 export class Game {
+
     #pizzaCount;
     #remainingSlices;
-    #totalSlices;
+    #pizza;
 
-    constructor(pizzaCount = 0, totalSlices = 8) {
+
+    constructor(
+        pizzaCount = 0,
+        pizza = new Pizza()
+    ) {
+
         this.#pizzaCount = pizzaCount;
-        this.#totalSlices = totalSlices;
-        this.#remainingSlices = totalSlices;
+        this.#pizza = pizza;
+        this.#remainingSlices = pizza.getTotalSlice();
+
     }
+
+
 
     /**
-     * Performs one game action.
+     * Applique une action de jeu.
      *
-     * @returns {{
-     *  sliceSold: boolean,
-     *  pizzaCooked: boolean,
-     *  slicesSold: number
-     * }}
+     * @param {BoostActions} actions
+     * @returns {GameResult}
      */
-    cook() {
-        if (this.#remainingSlices > 0) {
-            this.#remainingSlices--;
+    applyActions(actions) {
 
-            return {
-                sliceSold: true,
-                pizzaCooked: false,
-                slicesSold: 1
-            };
+
+        const result = new GameResult();
+
+
+
+        //=========================
+        // Clics
+        //=========================
+
+        const clicks = actions.getClick();
+
+        if(clicks > 0) {
+
+            result.addClicks(clicks);
+
+            this.#cookSlices(
+                clicks,
+                result
+            );
+
         }
 
-        this.#remainingSlices = this.#totalSlices;
-        this.#pizzaCount++;
+        if (clicks === 1) {
+            result.addEvent(GameEvent.CLICK);
+        }
 
-        return {
-            sliceSold: false,
-            pizzaCooked: true,
-            slicesSold: 0
-        };
+        
+
+        //=========================
+        // Ajout direct de slices
+        //=========================
+
+        const slicesAdded =
+            actions.getSlicesAdded();
+
+
+        if(slicesAdded > 0) {
+
+            this.#cookSlices(
+                slicesAdded,
+                result
+            );
+
+        }
+
+
+
+        //=========================
+        // Ajout direct de pizzas
+        //=========================
+
+        const pizzasAdded =
+            actions.getPizzaAdded();
+
+
+        if(pizzasAdded > 0) {
+
+            this.#pizzaCount += pizzasAdded;
+
+
+            result.addPizzasCooked(
+                pizzasAdded
+            );
+
+
+            result.addEvent(
+                GameEvent.PIZZA_COOKED
+            );
+
+        } 
+
+
+
+        //=========================
+        // Etat courant
+        //=========================
+
+        result
+            .setRemainingSlices(
+                this.#remainingSlices
+            )
+            .setPizzaCount(
+                this.#pizzaCount
+            ).setTotalSlices(
+                this.totalSlices()
+            );
+
+
+        return result;
 
     }
 
-    addSlices(amount) {
-        let slices = amount;
 
-        while (slices > 0) {
-            if (this.#remainingSlices > 0) {
+
+
+
+    #cookSlices(amount, result) {
+
+
+        let remaining = amount;
+
+
+
+        while(remaining > 0) {
+
+
+            if(this.#remainingSlices > 0) {
+
+
                 this.#remainingSlices--;
-                slices--;
 
-            } else {
-                this.#remainingSlices = this.#totalSlices;
-                this.#pizzaCount++;
+                result.addSlicesCooked(1);
+
+                remaining--;
+
             }
+
+
+            else {
+
+
+                this.#remainingSlices =
+                    this.totalSlices();
+
+
+                this.#pizzaCount++;
+
+
+                result.addPizzasCooked(1);
+
+
+                result.addEvent(
+                    GameEvent.PIZZA_COOKED
+                );
+
+            }
+
         }
-        return  {
-                    click: false,
-                    slicesSold: amount,
-                    pizzasCooked: Math.floor(amount/this.#totalSlices)
-                };
+
     }
 
-    addPizzas(amount) {
-        return this.addSlices(amount * this.#totalSlices);
-    }
+
+
+
 
     pizzaCount() {
+
         return this.#pizzaCount;
+
     }
+
 
     remainingSlices() {
+
         return this.#remainingSlices;
+
     }
 
+
     totalSlices() {
-        return this.#totalSlices;
+
+        return this.#pizza.getTotalSlice();
+
     }
 
 }

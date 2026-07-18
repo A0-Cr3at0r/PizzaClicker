@@ -1,10 +1,12 @@
 import ActiveBoost  from "./ActiveBoost.js";
-import { BoostAction } from "../BoostAction.js";
+import BoostActions  from "../BoostAction.js";
+
 
 export default class AutoClickerBoost extends ActiveBoost {
 
     #clicksPerSecond;
     #timer;
+    #clicks;
 
     constructor(icon, clicksPerSecond = 1) {
         super(
@@ -16,24 +18,30 @@ export default class AutoClickerBoost extends ActiveBoost {
         
         this.#clicksPerSecond = clicksPerSecond;
         this.#timer = 0;
+        this.#clicks = 0;
         
+    }
+    
+    applyEffect(boostAction = new BoostActions()) {
+        
+        boostAction.addClick(this.#clicks);
+        this.#clicks = 0;
+
+        return boostAction;
     }
 
     update(deltaTime) {
 
+        const boostAction = new BoostActions();
+
         this.#timer += deltaTime;
-        const actions = [];
 
         while (this.#timer >= 1) {
-            actions.push({
-                type: BoostAction.AUTO_CLICK,
-                count: this.#clicksPerSecond
-            });
-
+            this.#clicks++;
             this.#timer -= 1;
         }
 
-        return actions;
+        return this.applyEffect(boostAction);
     }
 
 }

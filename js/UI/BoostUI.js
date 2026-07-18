@@ -2,6 +2,7 @@ export default class BoostUI {
 
     #boostList;
     #moneyCount;
+
     #message;
 
     #tooltip;
@@ -10,23 +11,79 @@ export default class BoostUI {
 
     #onBuy;
 
-    constructor(boostManager, onBuy) {
+    #cards;
 
-        this.#boostList = document.getElementById("boostList");
-        this.#moneyCount = document.getElementById("moneyCount");
-        this.#message = document.getElementById("boostMessage");
+
+
+    constructor(boosts, onBuy) {
+
+
+        this.#boostList =
+            document.getElementById("boostList");
+
+
+        this.#moneyCount =
+            document.getElementById("moneyCount");
+
+
+        this.#message =
+            document.getElementById("boostMessage");
+
 
         this.#messageTimeout = null;
 
+
         this.#onBuy = onBuy;
 
-        this.#tooltip = this.#createTooltip();
 
-        this.#createBoostCards(boostManager);
+        this.#cards = new Map();
 
-        this.render(boostManager.wallet());
+
+        this.#tooltip =
+            this.#createTooltip();
+
+
+        this.#createBoostCards(boosts);
 
     }
+
+
+
+
+    render(balance) {
+
+
+        this.#moneyCount.textContent =
+            balance;
+
+
+
+        for(
+            const [boost,card]
+            of this.#cards
+        ) {
+
+
+            if(balance < boost.getPrice()) {
+
+                card.classList.add(
+                    "disabled"
+                );
+
+            }
+
+            else {
+
+                card.classList.remove(
+                    "disabled"
+                );
+
+            }
+
+        }
+
+    }
+
 
     #createTooltip() {
 
@@ -40,96 +97,83 @@ export default class BoostUI {
 
     }
 
-    #createBoostCards(boostManager) {
 
-        for (const boost of boostManager.getBoosts()) {
+    #createBoostCards(boosts) {
 
-            const li = document.createElement("li");
+        for (const boost of boosts) {
 
-            li.classList.add("boost-card");
+            const card = this.#createBoostCard(boost);
 
-            li.dataset.price = boost.getPrice();
+            this.#cards.set(boost, card);
 
-            li.innerHTML = `
-                            <img src="${boost.getIcon()}" alt="${boost.getName()}">
-
-                            <div class="boost-info">
-
-                                <strong>
-                                    ${boost.getName()}
-                                </strong>
-
-                                <div class="boost-tooltip">
-
-                                    <strong>${boost.getName()}</strong>
-
-                                    <span>
-                                        ${boost.getDescription()}
-                                    </span>
-
-                                    <span>
-                                        Price : ${boost.getPrice()} 🪙
-                                    </span>
-
-                                </div>
-
-                            </div>
-
-                            <span class="boost-price">
-                                ${boost.getPrice()} 🪙
-                            </span>
-                        `;
-
-            li.addEventListener("click", () => {
-
-                const success = this.#onBuy(boost);
-
-                if (!success) {
-                    this.#showMessage("Not enough coins!");
-                }
-
-            });
-
-            li.addEventListener("mouseenter", (event) => {
-
-                this.#showTooltip(boost, event);
-
-            });
-
-            li.addEventListener("mousemove", (event) => {
-
-                this.#moveTooltip(event);
-
-            });
-
-            li.addEventListener("mouseleave", () => {
-
-                this.#hideTooltip();
-
-            });
-
-            this.#boostList.appendChild(li);
+            this.#boostList.appendChild(card);
 
         }
 
     }
 
 
+    #createBoostCard(boost) {
+
+        const li = document.createElement("li");
+
+        li.classList.add("boost-card");
+
+        li.dataset.price = boost.getPrice();
 
 
-    render(wallet) {
-        this.#moneyCount.textContent = wallet.balance();
+        li.innerHTML = `
+            <img src="${boost.getIcon()}" alt="${boost.getName()}">
 
-        for (const card of this.#boostList.children) {
-            const price = Number(card.dataset.price);
+            <div class="boost-info">
 
-            if (wallet.balance() < price) {
-                card.classList.add("disabled");
-            } else {
-                card.classList.remove("disabled");
+                <strong>
+                    ${boost.getName()}
+                </strong>
+
+            </div>
+
+            <span class="boost-price">
+                ${boost.getPrice()} 🪙
+            </span>
+        `;
+
+
+        li.addEventListener("click", () => {
+
+            const success = this.#onBuy(boost);
+
+            if (!success) {
+
+                this.#showMessage("Not enough coins!");
+
             }
 
-        }
+        });
+
+
+        li.addEventListener("mouseenter", event => {
+
+            this.#showTooltip(boost, event);
+
+        });
+
+
+        li.addEventListener("mousemove", event => {
+
+            this.#moveTooltip(event);
+
+        });
+
+
+        li.addEventListener("mouseleave", () => {
+
+            this.#hideTooltip();
+
+        });
+
+
+        return li;
 
     }
 
@@ -142,6 +186,7 @@ export default class BoostUI {
 
         clearTimeout(this.#messageTimeout);
 
+
         this.#messageTimeout = setTimeout(() => {
 
             this.#message.classList.remove("visible");
@@ -150,14 +195,21 @@ export default class BoostUI {
 
     }
 
-    
+
     #showTooltip(boost, event) {
 
         this.#tooltip.innerHTML = `
             <strong>${boost.getName()}</strong>
-            <span>${boost.getDescription()}</span>
-            <span>Price : ${boost.getPrice()} 🪙</span>
+
+            <span>
+                ${boost.getDescription()}
+            </span>
+
+            <span>
+                Price : ${boost.getPrice()} 🪙
+            </span>
         `;
+
 
         this.#tooltip.classList.add("visible");
 

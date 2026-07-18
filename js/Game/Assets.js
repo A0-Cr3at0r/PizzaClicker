@@ -31,10 +31,10 @@ export const AutoClickers = {
     defaultClicksPerSecond: 1
 };
 
-export const Economy = {
-    sliceValue: 10
-};
-
 export const GameConfig = {
-    totalSlices: 8
+    name: "Standard",
+    totalSlices: 8,
+    price: 5,
+    imageSrc: "assets/images/PizzaGameWithoutBG.png"
+    
 };

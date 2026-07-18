@@ -1,6 +1,8 @@
 import ModifierBoost from "./ModifierBoost.js";
+import BoostActions  from "../BoostAction.js";
 
-export default class MultiplierBoost extends ModifierBoost {
+
+export default class SlicesBoost extends ModifierBoost {
     #multiplier
     #duration
 
@@ -10,8 +12,11 @@ export default class MultiplierBoost extends ModifierBoost {
         this.#duration = duration;
     }
 
-    modify(value){
-        return value*this.#multiplier;
+    applyEffect(boostActions = new BoostActions()){
+        
+        boostActions.multiplySlices(this.#multiplier);
+
+        return boostActions;
     } 
 
     update(dt) {
