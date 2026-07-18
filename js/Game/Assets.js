@@ -38,3 +38,4 @@ export const GameConfig = {
     imageSrc: "assets/images/PizzaGameWithoutBG.png"
     
 };
+

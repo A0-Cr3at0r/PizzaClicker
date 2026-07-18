@@ -11,6 +11,8 @@ export default class Metric {
         return null;
     }
 
+    setValue(value) {};
+
     loadState(state) {}
 
 }

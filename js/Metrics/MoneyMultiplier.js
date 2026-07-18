@@ -13,4 +13,8 @@ export default class MoneyMultiplier extends Metric {
         return this.#multiplier;
     }
 
+    setValue(value) {
+        this.#multiplier = value;
+    }
+
 }

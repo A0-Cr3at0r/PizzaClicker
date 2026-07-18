@@ -141,4 +141,31 @@ export class Game {
 
     }
 
+    getState() {
+
+        return {
+
+            pizzaCount:
+                this.#pizzaCount,
+
+            remainingSlices:
+                this.#remainingSlices
+
+        };
+
+    }
+
+
+
+    loadState(state) {
+
+        this.#pizzaCount =
+            state.pizzaCount;
+
+
+        this.#remainingSlices =
+            state.remainingSlices;
+
+    }
+
 }

@@ -2,7 +2,16 @@ import ActiveBoost from "../Boosts/ActiveBoosts/ActiveBoost.js";
 import InstantBoost from "../Boosts/InstantBoosts/InstantBoost.js";
 import MoneyBoost from "../Boosts/ModifierBoosts/MoneyBoost.js";
 import SlicesBoost from "../Boosts/ModifierBoosts/SlicesBoost.js";
+import AutoClickerBoost from "../Boosts/ActiveBoosts/AutoClicker.js";
 import BoostActions from "../Boosts/BoostAction.js";
+import {
+        Icons,
+        Prices,
+        Durations,
+        Multipliers,
+        AutoClickers,
+        GameConfig
+    } from "../Game/Assets.js";
 
 
 export default class BoostManager {
@@ -144,6 +153,73 @@ export default class BoostManager {
             ...this.#activeBoosts,
             ...this.#instantBoosts
         ];
+
+    }
+
+
+    //=========================
+    // Save / Load
+    //=========================
+
+    getState() {
+
+        return {
+
+            moneyBoosts:
+                this.#moneyBoosts.length,
+
+            activeBoosts:
+                this.#activeBoosts.length
+
+        };
+
+    }
+
+
+
+    loadState(state) {
+
+
+        this.#moneyBoosts = [];
+        this.#activeBoosts = [];
+
+
+        for(let i = 0; i < state.moneyBoosts; i++) {
+
+            this.#addMoneyBoost();
+        }
+
+
+        for(let i = 0; i < state.activeBoosts; i++) {
+
+            this.#addActiveBoost();
+        }
+
+    }
+
+
+    //=========================
+    // Internal add
+    //=========================
+
+    #addMoneyBoost() {
+
+        this.#moneyBoosts.push( new MoneyBoost(
+                                                "+20% Revenue",
+                                                Prices.percent,
+                                                Icons.percent,
+                                                "Increase all revenues by 20%",
+                                                Multipliers.percent
+                                            ));
+
+    }
+
+    #addActiveBoost() {
+
+        this.#activeBoosts.push(new  AutoClickerBoost(
+                                                        Icons.autoClicker,
+                                                        AutoClickers.defaultClicksPerSecond
+                                                    ));
 
     }
 

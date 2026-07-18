@@ -12,6 +12,10 @@ export default class TotalSlices extends Metric {
         return this.#total;
     }
 
+    setValue(value) {
+        this.#total = value;
+    }
+
     getName() {
         return this.#name;
     }

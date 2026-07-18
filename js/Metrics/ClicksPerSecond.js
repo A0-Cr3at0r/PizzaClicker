@@ -29,6 +29,10 @@ export default class ClicksPerSecond extends Metric {
         return this.#value;
     }
 
+    setValue(value) {
+        this.#value = value;
+    }
+
     getName() {
         return this.#name;
     }

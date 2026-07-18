@@ -27,6 +27,10 @@ export default class PizzasPerSecond extends Metric {
         return this.#value;
     }
 
+    setValue(value) {
+        this.#value = value;
+    }
+
     getName() {
         return this.#name;
     }

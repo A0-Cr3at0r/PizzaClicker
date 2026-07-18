@@ -13,4 +13,8 @@ export default class SliceMultiplier extends Metric {
         return this.#multiplier;
     }
 
+    setValue(value) {
+        this.#multiplier = value;
+    }
+
 }

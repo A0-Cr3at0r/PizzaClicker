@@ -24,6 +24,7 @@ import { AudioManager } from "../Managers/AudioManager.js";
 import MetricManager from "../Managers/MetricManager.js";
 import BoostManager from "../Managers/BoostsManager.js";
 import ClickManager from "../Managers/ClickManager.js";
+import SaveManager from "../Managers/SaveManager.js";
 
 
 // Wallet
@@ -108,6 +109,22 @@ const clickManager =
 const audioManager =
     new AudioManager();
 
+
+
+const saveManager =
+    new SaveManager(
+        game,
+        wallet,
+        boostManager,
+        metricManager
+    );
+
+window.addEventListener(
+    "beforeunload",
+    () => {
+        saveManager.save();
+    }
+    );
 
 
 //-----------------------------------------------------
@@ -310,7 +327,9 @@ function purchaseBoost(boost) {
 let previousTime =
     performance.now();
 
+//saveManager.load();
 
+saveManager.clear();
 
 requestAnimationFrame(
     gameLoop

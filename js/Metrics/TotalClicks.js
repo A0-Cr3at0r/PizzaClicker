@@ -17,6 +17,10 @@ export default class TotalClicks extends Metric {
         return this.#name;
     }
 
+    setValue(value) {
+        this.#total = value;
+    }
+
     getState() {
         return this.#total;
     }
