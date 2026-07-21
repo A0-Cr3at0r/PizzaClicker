@@ -1,5 +1,19 @@
-export class PizzaUI {
+/*
+    Pizza UI Controller
 
+    Responsible for rendering the pizza interface.
+
+    Handles:
+    - Pizza image loading and skin changes
+    - Pizza slice visualization through Canvas
+    - Pizza and slice counters updates
+    - Click animation triggering
+
+    This class only manages visual updates.
+    It does not contain game logic.
+*/
+
+export class PizzaUI {
 
     #pizzaCountElement;
     #sliceCountElement;
@@ -13,39 +27,28 @@ export class PizzaUI {
     #lastTotalSlices;
 
 
-
     constructor(
         pizzaCanvas,
     ) {
 
-
         this.#pizzaCountElement =
             document.getElementById("pizzaCount");
-
 
         this.#sliceCountElement =
             document.getElementById("sliceCount");
 
-
-
         this.#pizzaCanvas =
             pizzaCanvas;
-
 
         this.#ctx =
             this.#pizzaCanvas.getContext("2d");
 
-
-
         this.#pizzaImage =
             new Image();
 
-
-
     }
 
-
-
+    
     setSkin(imageSrc) {
 
         this.#pizzaImage.onload = () => {
@@ -64,14 +67,10 @@ export class PizzaUI {
 
         };
 
-
         this.#pizzaImage.src =
             imageSrc;
 
     }
-
-
-
 
 
     update(
@@ -86,14 +85,11 @@ export class PizzaUI {
         this.#lastTotalSlices =
             totalSlices;
 
-
         this.#pizzaCountElement.textContent =
             pizzaCount;
 
-
         this.#sliceCountElement.textContent =
             remainingSlices;
-
 
         this.#drawPizzaSlices(
             remainingSlices,
@@ -103,23 +99,16 @@ export class PizzaUI {
     }
 
 
-
-
-
     #drawPizzaSlices(
         remainingSlices,
         totalSlices
     ) {
 
-
         const ctx =
             this.#ctx;
 
-
         const canvas =
             this.#pizzaCanvas;
-
-
 
         ctx.clearRect(
             0,
@@ -128,12 +117,8 @@ export class PizzaUI {
             canvas.height
         );
 
-
-
         const visibleSlices =
             totalSlices - remainingSlices;
-
-
 
         const visibleAngle =
             (2 * Math.PI)
@@ -142,16 +127,11 @@ export class PizzaUI {
             /
             totalSlices;
 
-
-
         const centerX =
             canvas.width / 2;
 
-
         const centerY =
             canvas.height / 2;
-
-
 
         const radius =
             Math.min(
@@ -159,19 +139,14 @@ export class PizzaUI {
                 centerY
             ) * 0.9;
 
-
-
         ctx.save();
 
-
         ctx.beginPath();
-
 
         ctx.moveTo(
             centerX,
             centerY
         );
-
 
         ctx.arc(
             centerX,
@@ -181,13 +156,9 @@ export class PizzaUI {
             visibleAngle - Math.PI / 2
         );
 
-
         ctx.closePath();
 
-
         ctx.clip();
-
-
 
         ctx.drawImage(
             this.#pizzaImage,
@@ -197,32 +168,23 @@ export class PizzaUI {
             canvas.height
         );
 
-
-
         ctx.restore();
 
     }
 
 
-
-
-
     pizzaClickAnimation() {
-
 
         this.#pizzaCanvas.classList.remove(
             "click-animation"
         );
 
-
         void this.#pizzaCanvas.offsetWidth;
-
 
         this.#pizzaCanvas.classList.add(
             "click-animation"
         );
 
     }
-
 
 }

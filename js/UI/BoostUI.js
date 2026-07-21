@@ -1,3 +1,20 @@
+/*
+    Boost UI Controller
+
+    Responsible for managing the boost interface.
+
+    Handles:
+    - Dynamic boost card creation
+    - Boost purchase interactions
+    - Wallet display updates
+    - Disabled state management
+    - Tooltip display
+    - Error messages
+
+    This class only manages UI behavior.
+    Boost logic and purchases are handled externally.
+*/
+
 export default class BoostUI {
 
     #boostList;
@@ -14,86 +31,52 @@ export default class BoostUI {
     #cards;
 
 
-
     constructor(boosts, onBuy) {
-
 
         this.#boostList =
             document.getElementById("boostList");
 
-
         this.#moneyCount =
             document.getElementById("moneyCount");
-
 
         this.#message =
             document.getElementById("boostMessage");
 
-
         this.#messageTimeout = null;
-
 
         this.#onBuy = onBuy;
 
-
         this.#cards = new Map();
-
 
         this.#tooltip =
             this.#createTooltip();
-
 
         this.#createBoostCards(boosts);
 
     }
 
-
-
+//=========================
+// Rendering
+//=========================
 
     render(balance) {
 
-
-        this.#moneyCount.textContent =
-            balance;
-
-
+        this.#moneyCount.textContent = balance;
 
         for(
             const [boost,card]
             of this.#cards
         ) {
 
-
             if(balance < boost.getPrice()) {
-
-                card.classList.add(
-                    "disabled"
-                );
-
+                card.classList.add("disabled");
             }
 
             else {
-
-                card.classList.remove(
-                    "disabled"
-                );
-
+                card.classList.remove("disabled");
             }
 
         }
-
-    }
-
-
-    #createTooltip() {
-
-        const tooltip = document.createElement("div");
-
-        tooltip.classList.add("boost-tooltip-global");
-
-        document.body.appendChild(tooltip);
-
-        return tooltip;
 
     }
 
@@ -123,22 +106,14 @@ export default class BoostUI {
 
         li.dataset.price = boost.getPrice();
 
-
         li.innerHTML = `
             <img src="${boost.getIcon()}" alt="${boost.getName()}">
 
             <div class="boost-info">
-
-                <strong>
-                    ${boost.getName()}
-                </strong>
-
+                <strong> ${boost.getName()} </strong>
             </div>
 
-            <span class="boost-price">
-                ${boost.getPrice()} 🪙
-            </span>
-        `;
+            <span class="boost-price"> ${boost.getPrice()} 🪙 </span>`;
 
 
         li.addEventListener("click", () => {
@@ -146,34 +121,25 @@ export default class BoostUI {
             const success = this.#onBuy(createBoost);
 
             if (!success) {
-
                 this.#showMessage("Not enough coins!");
-
             }
 
         });
 
 
         li.addEventListener("mouseenter", event => {
-
             this.#showTooltip(boost, event);
-
         });
 
 
         li.addEventListener("mousemove", event => {
-
             this.#moveTooltip(event);
-
         });
 
 
         li.addEventListener("mouseleave", () => {
-
             this.#hideTooltip();
-
         });
-
 
         return li;
 
@@ -188,7 +154,6 @@ export default class BoostUI {
 
         clearTimeout(this.#messageTimeout);
 
-
         this.#messageTimeout = setTimeout(() => {
 
             this.#message.classList.remove("visible");
@@ -197,21 +162,33 @@ export default class BoostUI {
 
     }
 
+//=========================
+// Tooltip
+//=========================
+
+    #createTooltip() {
+
+        const tooltip = document.createElement("div");
+
+        tooltip.classList.add("boost-tooltip-global");
+
+        document.body.appendChild(tooltip);
+
+        return tooltip;
+
+    }
+
 
     #showTooltip(boost, event) {
 
         this.#tooltip.innerHTML = `
-            <strong>${boost.getName()}</strong>
+        
+            <strong> ${boost.getName()} </strong>
 
-            <span>
-                ${boost.getDescription()}
-            </span>
+            <span>  ${boost.getDescription()} </span>
 
-            <span>
-                Price : ${boost.getPrice()} 🪙
-            </span>
+            <span>  Price : ${boost.getPrice()} 🪙 </span>
         `;
-
 
         this.#tooltip.classList.add("visible");
 

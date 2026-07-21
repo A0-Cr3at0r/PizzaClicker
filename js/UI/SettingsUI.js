@@ -1,12 +1,26 @@
-export default class SettingsUI {
+/*
+    Settings UI Controller
 
+    Responsible for managing the settings interface.
+
+    Handles:
+    - Opening and closing the settings panel
+    - Binding settings controls events
+    - Applying visual theme changes
+    - Updating audio preferences through SettingsManager
+    - Selecting pizza skins
+
+    This class only manages UI interactions.
+    Settings data persistence and logic are handled by SettingsManager.
+*/
+
+export default class SettingsUI {
 
     #settingsManager;
     #settingsButton;
     #settingsPanel;
     #settingsOverlay;
     #closeSettingsButton;
-
 
 
     constructor(settingsManager) {
@@ -26,9 +40,7 @@ export default class SettingsUI {
         this.#closeSettingsButton =
             document.getElementById("closeSettingsButton");
 
-
         this.#bindEvents();
-
 
         this.#loadSettings();
 
@@ -37,120 +49,78 @@ export default class SettingsUI {
 
     #openSettings() {
 
-        this.#settingsPanel.classList.add(
-            "open"
-        );
+        this.#settingsPanel.classList.add("open");
 
-        this.#settingsOverlay.classList.add(
-            "show"
-        );
+        this.#settingsOverlay.classList.add("show");
 
     }
-
 
 
     #closeSettings() {
 
-        this.#settingsPanel.classList.remove(
-            "open"
-        );
+        this.#settingsPanel.classList.remove("open");
 
-        this.#settingsOverlay.classList.remove(
-            "show"
-        );
+        this.#settingsOverlay.classList.remove("show");
 
     }
-
 
     //=========================
     // Initialization
     //=========================
 
-
     #loadSettings() {
-
 
         /*
             Theme
         */
 
         const darkTheme =
-            document.getElementById(
-                "darkTheme"
-            );
-
+            document.getElementById("darkTheme");
 
         darkTheme.checked =
             this.#settingsManager.isDarkTheme();
-
-
 
         this.#applyTheme(
             darkTheme.checked
         );
 
-
-
-
         /*
             Audio
         */
 
-
         const mute =
-            document.getElementById(
-                "muteAudio"
-            );
-
+            document.getElementById( "muteAudio");
 
         mute.checked =
             this.#settingsManager.isMuted();
 
-
-
-
         document
             .getElementById("musicVolume")
-            .value =
-                this.#settingsManager
-                    .getMusicVolume();
-
-
-
+            .value = this.#settingsManager.getMusicVolume();
 
         document
             .getElementById("sfxVolume")
-            .value =
-                this.#settingsManager
-                    .getSfxVolume();
-
+            .value = this.#settingsManager.getSfxVolume();
 
         /*
             Skin
         */
 
-
         this.#selectSkin(
-            this.#settingsManager
-                .getPizzaSkin()
+
+            this.#settingsManager.getPizzaSkin()
+
         );
 
-
     }
-
-
-
-
 
     //=========================
     // Events
     //=========================
 
-
     #bindEvents() {
-        this.#settingsButton
-            .addEventListener(
-                "click",
+
+        this.#settingsButton.addEventListener( "click",
                 () => {
 
                     document
@@ -166,11 +136,7 @@ export default class SettingsUI {
                 }
             );
 
-
-
-        this.#closeSettingsButton
-            .addEventListener(
-                "click",
+        this.#closeSettingsButton.addEventListener("click",
                 () => {
 
                     this.#closeSettings();
@@ -178,11 +144,7 @@ export default class SettingsUI {
                 }
             );
 
-
-
-        this.#settingsOverlay
-            .addEventListener(
-                "click",
+        this.#settingsOverlay.addEventListener( "click",
                 () => {
 
                     this.#closeSettings();
@@ -194,39 +156,28 @@ export default class SettingsUI {
             Theme
         */
 
-
         document
             .getElementById("darkTheme")
             .addEventListener(
                 "change",
                 event => {
 
-                    const value =
-                        event.target.checked;
+                    const value = event.target.checked;
 
-
-                    this.#settingsManager
-                        .setDarkTheme(value);
-
+                    this.#settingsManager.setDarkTheme(value);
 
                     this.#applyTheme(value);
 
                 }
             );
 
-
-
-
-
         /*
             Audio
         */
 
-
         document
             .getElementById("muteAudio")
-            .addEventListener(
-                "change",
+            .addEventListener("change",
                 event => {
 
                     this.#settingsManager
@@ -237,100 +188,64 @@ export default class SettingsUI {
                 }
             );
 
-
-
-
         document
             .getElementById("musicVolume")
-            .addEventListener(
-                "input",
+            .addEventListener("input",
                 event => {
 
                     this.#settingsManager
                         .setMusicVolume(
                             Number(event.target.value)
                         );
-
                 }
             );
 
-
-
-
         document
             .getElementById("sfxVolume")
-            .addEventListener(
-                "input",
+            .addEventListener("input",
                 event => {
 
                     this.#settingsManager
                         .setSfxVolume(
                             Number(event.target.value)
                         );
-
                 }
             );
-
-
-
-
 
         /*
             Pizza skins
         */
 
-
         document
-            .querySelectorAll(
-                ".pizza-skin"
-            )
+            .querySelectorAll(".pizza-skin")
             .forEach(
                 skin => {
-
-
-                    skin.addEventListener(
-                        "click",
+                    skin.addEventListener("click",
                         () => {
-
 
                             const skinName =
                                 skin.dataset.skin;
-
-
 
                             this.#settingsManager
                                 .setPizzaSkin(
                                     skinName
                                 );
 
-
-
                             this.#selectSkin(
                                 skinName
                             );
 
-
                         }
                     );
-
-
                 }
             );
-
-
     }
-
-
-
-
 
     //=========================
     // Theme
     //=========================
 
-
     #applyTheme(enabled) {
-
 
         if(enabled) {
 
@@ -350,39 +265,21 @@ export default class SettingsUI {
 
     }
 
-
-
-
-
     //=========================
     // Skin
     //=========================
 
-
     #selectSkin(skinName) {
 
-
         document
-            .querySelectorAll(
-                ".pizza-skin"
-            )
+            .querySelectorAll(".pizza-skin")
             .forEach(
                 skin => {
 
-
-                    skin.classList.toggle(
-
-                        "selected",
-
-                        skin.dataset.skin === skinName
-
-                    );
-
+                    skin.classList.toggle("selected", skin.dataset.skin === skinName);
 
                 }
             );
-
-
     }
 
 

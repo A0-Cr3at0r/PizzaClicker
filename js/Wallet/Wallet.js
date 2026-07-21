@@ -1,3 +1,21 @@
+/*
+    Wallet
+
+    Responsible for managing the player's economy.
+
+    Handles:
+    - Current balance
+    - Pizza selling rewards
+    - Purchases validation
+    - Money multipliers
+    - Save/load state
+
+    The Wallet does not:
+    - Manage UI updates
+    - Manage boosts
+    - Handle game events
+*/
+
 export default class Wallet {
 
     #balance;
@@ -13,8 +31,6 @@ export default class Wallet {
 
     }
 
-
-
     //=========================
     // Balance
     //=========================
@@ -24,8 +40,6 @@ export default class Wallet {
         return this.#balance;
 
     }
-
-
 
     //=========================
     // Operations
@@ -46,18 +60,22 @@ export default class Wallet {
     }
 
     sell(pizzasSold) {
+
         this.add(pizzasSold * this.#pizzaPrice * this.#moneyMultiplier);
+
     }
 
     getMoneyMultiplier() {
+
         return this.#moneyMultiplier;
+
     }
 
     setMoneyMultiplier(bonus) {
-            this.#moneyMultiplier = 1 + bonus;             
+
+            this.#moneyMultiplier = 1 + bonus;  
+
     }
-
-
 
     canPay(amount) {
 
@@ -65,17 +83,11 @@ export default class Wallet {
 
     }
 
-
-
     pay(amount) {
 
-
         if(!this.canPay(amount)) {
-
             return false;
-
         }
-
 
         this.#balance -= amount;
 
@@ -97,8 +109,6 @@ export default class Wallet {
         };
 
     }
-
-
 
     loadState(state) {
 
