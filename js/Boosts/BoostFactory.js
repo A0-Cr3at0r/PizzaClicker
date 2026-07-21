@@ -1,3 +1,18 @@
+/*
+    Boost Factory
+
+    Responsible for creating configured boost instances.
+
+    Centralizes:
+    - Boost constructors
+    - Default values
+    - Assets references
+    - Balance parameters
+
+    This class only creates boosts.
+    It does not manage purchases or effects.
+*/
+
 import MoneyBoost from "./ModifierBoosts/MoneyBoost.js";
 import SlicesBoost from "./ModifierBoosts/SlicesBoost.js";
 
@@ -17,6 +32,7 @@ import {
 export default class BoostFactory {
 
     static createMoneyBoost() {
+
         return new MoneyBoost(
             "+20% Revenue",
             Prices.percent,
@@ -24,9 +40,11 @@ export default class BoostFactory {
             "Increase all revenues by 20%",
             Multipliers.percent
         );
+        
     }
 
     static createX2Boost() {
+
         return new SlicesBoost(
             "x2 Slices",
             Prices.x2,
@@ -35,9 +53,11 @@ export default class BoostFactory {
             Multipliers.x2,
             Durations.x2
         );
+
     }
 
     static createX5Boost() {
+
         return new SlicesBoost(
             "x5 Slices",
             Prices.x5,
@@ -46,25 +66,32 @@ export default class BoostFactory {
             Multipliers.x5,
             Durations.x5
         );
+
     }
 
     static createSlicePack() {
+
         return new SlicePackBoost(
             Icons.slicePack
         );
+
     }
 
     static createPizzaPack() {
+
         return new PizzaPackBoost(
             Icons.pizzaPack
         );
+
     }
 
     static createAutoClicker() {
+
         return new AutoClickerBoost(
             Icons.autoClicker,
             AutoClickers.defaultClicksPerSecond
         );
+
     }
 
 }

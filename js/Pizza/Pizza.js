@@ -1,6 +1,22 @@
+/*
+    Pizza Entity
+
+    Represents a pizza configuration in the game.
+
+    Stores:
+    - Pizza name
+    - Number of slices
+    - Selling price
+    - Associated image
+
+    This class only contains pizza data.
+    Game logic and rendering are handled externally.
+*/
+
 import { GameConfig } from "../Game/Assets.js";
 
 export default class Pizza {
+    
     #name;
     #totalSlice;
     #price;
@@ -9,7 +25,8 @@ export default class Pizza {
     constructor(name = GameConfig.name, 
                 totalSlice = GameConfig.totalSlices , 
                 price = GameConfig.price, 
-                image = GameConfig.imageSrc) {
+                image = GameConfig.imageSrc)
+    {
         this.#name = name;
         this.#totalSlice = totalSlice;
         this.#price = price;

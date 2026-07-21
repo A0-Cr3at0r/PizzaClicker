@@ -1,8 +1,18 @@
+/*
+    Total Slices Metric
+
+    Stores the total number of slices
+    produced during the game.
+
+    This metric is persistent and supports
+    save/load operations.
+*/
+
 import Metric from "./Metric.js";
 
 export default class TotalSlices extends Metric {
     #total = 0;
-    #name = "Total Slices"
+    #name = "Total Slices";
 
     recordSlice(amount) {
         this.#total += amount;

@@ -1,3 +1,14 @@
+/*
+    Clicks Per Second Metric
+
+    Tracks the player's clicking rate.
+
+    Updates its value every second based on
+    the number of clicks recorded during the interval.
+
+    Extends Metric base behavior.
+*/
+
 import Metric from "./Metric.js";
 
 export default class ClicksPerSecond extends Metric {
@@ -19,7 +30,7 @@ export default class ClicksPerSecond extends Metric {
 
             this.#value = this.#clicks;
             this.#clicks = 0;
-            this.#elapsed = 0;
+            this.#elapsed -= 1;
 
         }
 

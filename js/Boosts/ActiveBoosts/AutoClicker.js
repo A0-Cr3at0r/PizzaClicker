@@ -1,3 +1,15 @@
+/*
+    Auto Clicker Boost
+
+    Generates automatic clicks over time.
+
+    The boost accumulates clicks according to
+    its clicks-per-second rate.
+
+    The generated clicks are converted into
+    BoostActions and applied by the game.
+*/
+
 import ActiveBoost  from "./ActiveBoost.js";
 import BoostActions  from "../BoostAction.js";
 
@@ -32,8 +44,6 @@ export default class AutoClickerBoost extends ActiveBoost {
 
     update(deltaTime) {
 
-        const boostAction = new BoostActions();
-
         this.#timer += deltaTime;
 
         while (this.#timer >= 1) {
@@ -41,7 +51,7 @@ export default class AutoClickerBoost extends ActiveBoost {
             this.#timer -= 1;
         }
 
-        return this.applyEffect(boostAction);
+        return this.applyEffect( new BoostActions());
     }
 
 }

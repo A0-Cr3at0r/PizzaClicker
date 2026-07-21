@@ -1,3 +1,14 @@
+/*
+    Slices Per Second Metric
+
+    Tracks the slice production rate.
+
+    Accumulates produced slices and updates
+    the displayed value every second.
+
+    Extends Metric base behavior.
+*/
+
 import Metric from "./Metric.js";
 
 export default class SlicesPerSecond extends Metric {
@@ -18,7 +29,7 @@ export default class SlicesPerSecond extends Metric {
         if (this.#elapsed >= 1) {
             this.#value = this.#slices;
             this.#slices = 0;
-            this.#elapsed = 0;
+            this.#elapsed -= 1;
         }
 
     }

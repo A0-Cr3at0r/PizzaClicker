@@ -1,10 +1,19 @@
+/*
+    Slice Multiplier Boost
+
+    Temporary modifier that multiplies
+    slice production.
+
+    The effect expires after the configured duration.
+*/
+
 import ModifierBoost from "./ModifierBoost.js";
 import BoostActions  from "../BoostAction.js";
 
 
 export default class SlicesBoost extends ModifierBoost {
-    #multiplier
-    #duration
+    #multiplier;
+    #duration;
 
     constructor(name, price, icon, description, multiplier, duration) {
         super(name, price, icon, description);

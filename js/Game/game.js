@@ -342,8 +342,6 @@ settingsManager.load();
 
 settingsManager.apply();
 
-//saveManager.clear();
-
 requestAnimationFrame(
     gameLoop
 );

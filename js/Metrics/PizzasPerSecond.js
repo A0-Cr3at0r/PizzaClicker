@@ -1,3 +1,14 @@
+/*
+    Pizzas Per Second Metric
+
+    Tracks the pizza production rate.
+
+    Updates its value every second based on
+    the number of pizzas produced during the interval.
+
+    Extends Metric base behavior.
+*/
+
 import Metric from "./Metric.js";
 
 export default class PizzasPerSecond extends Metric {
@@ -17,10 +28,9 @@ export default class PizzasPerSecond extends Metric {
         if (this.#elapsed >= 1) {
             this.#value = this.#pizzas;
             this.#pizzas = 0;
-            this.#elapsed = 0;
+            this.#elapsed -= 1;
 
         }
-
     }
 
     getValue() {

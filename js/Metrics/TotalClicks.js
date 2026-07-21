@@ -1,9 +1,19 @@
+/*
+    Total Clicks Metric
+
+    Stores the total number of clicks
+    performed by the player.
+
+    This metric is persistent and supports
+    save/load operations.
+*/
+
 import Metric from "./Metric.js";
 
 export default class TotalClicks extends Metric {
 
     #total = 0;
-    #name = "Total Clicks"
+    #name = "Total Clicks";
 
     recordClick() {
         this.#total++;
