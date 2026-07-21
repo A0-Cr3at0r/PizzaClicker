@@ -10,12 +10,13 @@
 
 import InstantBoost from "./InstantBoost.js";
 import BoostActions from "../BoostAction.js";
+import { Prices } from "../../Game/Assets.js";
 
 export default class SlicePackBoost extends InstantBoost {
 
     constructor(icon) {
         super("+100 slices",
-            100,
+            Prices.slicePack,
             icon, 
             "add 100 slices instantly");
     }

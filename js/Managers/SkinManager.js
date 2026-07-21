@@ -1,5 +1,16 @@
-export default class SkinManager {
+/*
+    Skin Manager
 
+    Manages available pizza skins.
+
+    Responsibilities:
+    - Store available skins
+    - Change current skin
+    - Provide current image path
+    - Save and restore selected skin
+*/
+
+export default class SkinManager {
 
     #skins;
     #currentSkin;
@@ -7,61 +18,39 @@ export default class SkinManager {
 
     constructor() {
 
-
         this.#skins = {
 
-            classic:
-                "assets/images/PizzaGame.png",
+            classic: "assets/images/PizzaGame.png",
 
+            mexican: "assets/images/MexicanPizza.png",
 
-            mexican:
-                "assets/images/MexicanPizza.png",
+            allDressed: "assets/images/AllDressed.png",
 
+            goodPizza: "assets/images/GoodPizza.png",
 
-            allDressed:
-                "assets/images/AllDressed.png",
-
-
-            goodPizza:
-                "assets/images/GoodPizza.png",
-
-
-            ultimate:
-                "assets/images/UltimatePizza.png"
+            ultimate: "assets/images/UltimatePizza.png"
 
         };
-
 
         this.#currentSkin =
             "classic";
 
-
     }
-
-
 
 
     setSkin(name) {
 
         if(this.#skins[name] === undefined) {
 
-            console.warn(
-                "Unknown skin:",
-                name
-            );
+            console.warn("Unknown skin:", name);
 
             return;
-
         }
-
 
         this.#currentSkin =
             name;
 
     }
-
-
-
 
 
     getCurrentSkin() {
@@ -71,42 +60,24 @@ export default class SkinManager {
     }
 
 
-
-
-
     getImage() {
 
-        return this.#skins[
-            this.#currentSkin
-        ];
+        return this.#skins[this.#currentSkin];
 
     }
-
 
 
     getState() {
 
-        return {
-
-            currentSkin:
-                this.#currentSkin
-
-        };
+        return { currentSkin: this.#currentSkin };
 
     }
-
-
-
 
 
     loadState(state) {
 
-
-        this.setSkin(
-            state.currentSkin
-        );
+        this.setSkin(state.currentSkin);
 
     }
-
 
 }

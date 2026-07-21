@@ -1,3 +1,12 @@
+/**
+ * Core game engine.
+ *
+ * Handles pizza production logic, slice consumption
+ * and transformation of player actions into game results.
+ *
+ * Does not manage UI, audio or persistence.
+ */
+
 import Pizza from "../Pizza/Pizza.js";
 import GameResult from "./GameResult.js";
 import { GameEvent } from "./GameEvents.js";
@@ -20,15 +29,18 @@ export class Game {
         this.#remainingSlices = pizza.getTotalSlice();
 
     }
+    
 
-
-
-    /**
-     * Applique une action de jeu.
+   /**
+     * Applies gameplay actions and updates the game state.
+     *
+     * Converts clicks, boosts and instant additions
+     * into cooked slices and pizzas.
      *
      * @param {BoostActions} actions
      * @returns {GameResult}
      */
+
     applyActions(actions) {
 
         const totalSlices = this.totalSlices();
@@ -44,8 +56,7 @@ export class Game {
             pizzasAdded * totalSlices;
 
         // Les clicks et les slices ajoutées consomment des parts.
-        const pizzasFromSlices =
-            this.#cookSlices(clicks + slicesAdded);
+        const pizzasFromSlices = this.#cookSlices(clicks + slicesAdded);
 
         // Les pizzas ajoutées directement.
         if (pizzasAdded > 0) {
@@ -64,9 +75,12 @@ export class Game {
 
     }
 
-
-
-
+    /**
+     * Converts slice production into completed pizzas.
+     *
+     * Consumes remaining slices and creates pizzas
+     * when a complete pizza is reached.
+     */
 
     #cookSlices(amount) {
 
@@ -75,23 +89,25 @@ export class Game {
         while (amount > 0) {
 
             if (this.#remainingSlices > 0) {
-
                 this.#remainingSlices--;
                 amount--;
 
             } else {
-
                 this.#remainingSlices = this.totalSlices();
                 this.#pizzaCount++;
                 pizzasCooked++;
 
             }
-
         }
 
         return pizzasCooked;
-
     }
+
+    /**
+     * Creates a GameResult snapshot from the current game state.
+     *
+     * Adds gameplay events generated during the operation.
+     */
 
     #createResult(clicks, slicesCooked, pizzasCooked) {
 
@@ -114,58 +130,46 @@ export class Game {
         }
 
         return result;
-
     }
-
-
-
 
 
     pizzaCount() {
 
         return this.#pizzaCount;
-
     }
 
 
     remainingSlices() {
 
         return this.#remainingSlices;
-
     }
 
 
     totalSlices() {
 
         return this.#pizza.getTotalSlice();
-
     }
+
+    //=========================
+    // Save / Load
+    //=========================
 
     getState() {
 
         return {
 
-            pizzaCount:
-                this.#pizzaCount,
+            pizzaCount: this.#pizzaCount,
 
-            remainingSlices:
-                this.#remainingSlices
-
+            remainingSlices: this.#remainingSlices
         };
-
     }
-
 
 
     loadState(state) {
 
-        this.#pizzaCount =
-            state.pizzaCount;
+        this.#pizzaCount = state.pizzaCount;
 
-
-        this.#remainingSlices =
-            state.remainingSlices;
-
+        this.#remainingSlices = state.remainingSlices;
     }
 
 }

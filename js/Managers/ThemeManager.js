@@ -1,8 +1,17 @@
+/*
+    Theme Manager
+
+    Controls the global application theme.
+
+    Responsibilities:
+    - Enable dark mode
+    - Disable dark mode
+    - Save and restore theme preference
+*/
+
 export default class ThemeManager {
 
-
     #dark;
-
 
     constructor() {
 
@@ -11,40 +20,26 @@ export default class ThemeManager {
     }
 
 
-
     setDark(enabled) {
 
         this.#dark = enabled;
 
-
         if(this.#dark) {
-
-            document.body.classList.add(
-                "dark"
-            );
-
+            document.body.classList.add("dark");
         }
 
         else {
-
-            document.body.classList.remove(
-                "dark"
-            );
-
+            document.body.classList.remove("dark");
         }
 
     }
-
 
 
     toggle() {
 
-        this.setDark(
-            !this.#dark
-        );
+        this.setDark(!this.#dark);
 
     }
-
 
 
     isDark() {
@@ -54,27 +49,17 @@ export default class ThemeManager {
     }
 
 
-
     getState() {
 
-        return {
-
-            dark:
-                this.#dark
-
-        };
+        return {dark: this.#dark };
 
     }
-
 
 
     loadState(state) {
 
-        this.setDark(
-            state.dark
-        );
+        this.setDark(state.dark);
 
     }
-
 
 }

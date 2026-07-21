@@ -9,11 +9,13 @@
 
 import ModifierBoost from "./ModifierBoost.js";
 import BoostActions from "../BoostAction.js";
+import { Prices } from "../../Game/Assets.js";
+
 
 export default class MoneyBoost extends ModifierBoost {
     #moneyMultiplier;
 
-    constructor(name, price, icon, description, moneyMultiplier) {
+    constructor(name, price = Prices.percent, icon, description, moneyMultiplier) {
         super(name, price, icon, description);
         this.#moneyMultiplier = moneyMultiplier;
     }

@@ -10,13 +10,14 @@
 
 import InstantBoost from "./InstantBoost.js";
 import BoostActions from "../BoostAction.js";
+import { Prices } from "../../Game/Assets.js";
 
 export default class PizzaPackBoost extends InstantBoost {
 
     constructor(icon) {
         super(
                 "+100 Pizzas",
-                1000,
+                Prices.pizzaPack,
                 icon,
                 "Adds 100 pizzas instantly"
             );

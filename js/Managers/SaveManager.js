@@ -1,3 +1,18 @@
+/*
+=====================================================
+ SaveManager
+
+ Handles game persistence.
+
+ Responsibilities:
+ - Create save snapshots
+ - Store game state in localStorage
+ - Restore game state
+ - Manage save versions
+
+=====================================================
+*/
+
 export default class SaveManager {
 
     #game;
@@ -8,7 +23,6 @@ export default class SaveManager {
     #saveKey;
 
     static VERSION = 1;
-
 
 
     constructor(
@@ -28,88 +42,57 @@ export default class SaveManager {
 
     }
 
-
+    //=========================
+    // Save / Load
+    //=========================
 
     save() {
 
         const state = {
 
-            version:
-                SaveManager.VERSION,
+            version: SaveManager.VERSION,
 
-            game:
-                this.#game.getState(),
+            game: this.#game.getState(),
 
-            wallet:
-                this.#wallet.getState(),
+            wallet: this.#wallet.getState(),
 
-            boosts:
-                this.#boostManager.getState(),
+            boosts: this.#boostManager.getState(),
 
-            metrics:
-                this.#metricManager.getState()
-
+            metrics: this.#metricManager.getState()
         };
 
-
-        localStorage.setItem(
-            this.#saveKey,
-            JSON.stringify(state)
-        );
-
+        localStorage.setItem( this.#saveKey, JSON.stringify(state) );
     }
-
-
 
 
     load() {
 
-        const json =
-            localStorage.getItem(
-                this.#saveKey
-            );
-
+        const json = localStorage.getItem( this.#saveKey );
 
         if(json === null) {
-
             return false;
-
         }
 
-
-        const state =
-            JSON.parse(json);
-
+        const state = JSON.parse(json);
 
         switch(state.version) {
 
             case 1:
 
-                this.#game.loadState(
-                    state.game
-                );
+                this.#game.loadState( state.game );
 
-                this.#wallet.loadState(
-                    state.wallet
-                );
+                this.#wallet.loadState( state.wallet );
 
-                this.#boostManager.loadState(
-                    state.boosts
-                );
+                this.#boostManager.loadState( state.boosts );
 
-                this.#metricManager.loadState(
-                    state.metrics
-                );
+                this.#metricManager.loadState( state.metrics );
 
                 return true;
 
 
             default:
 
-                console.warn(
-                    "Unsupported save version:",
-                    state.version
-                );
+                console.warn( "Unsupported save version:", state.version );
 
                 return false;
 
@@ -117,27 +100,18 @@ export default class SaveManager {
 
     }
 
+    //=========================
+    // Utilities
+    //=========================
 
     reset() {
 
-        localStorage.removeItem(
-            this.#saveKey
-        );
-
+        localStorage.removeItem( this.#saveKey );
     }
-
-
 
 
     hasSave() {
 
-        return (
-            localStorage.getItem(
-                this.#saveKey
-            ) !== null
-        );
-
+        return localStorage.getItem( this.#saveKey ) !== null;
     }
-
-
 }

@@ -1,17 +1,28 @@
+/*
+=====================================================
+ MetricManager
+
+ Manages all game metrics.
+
+ Responsibilities:
+ - Register metrics
+ - Update time-based metrics
+ - Forward game events
+ - Create metric snapshots
+ - Handle metric persistence
+
+=====================================================
+*/
+
 export default class MetricManager {
 
     #metrics = new Map();
 
-
     addMetric(metric) {
 
-        this.#metrics.set(
-            metric.getName(),
-            metric
-        );
+        this.#metrics.set(metric.getName(), metric);
 
     }
-
 
 
     update(deltaTime) {
@@ -21,9 +32,7 @@ export default class MetricManager {
             metric.update(deltaTime);
 
         }
-
     }
-
 
 
     recordClick(amount = 1) {
@@ -37,7 +46,6 @@ export default class MetricManager {
     }
 
 
-
     recordSlice(amount = 1) {
 
         for (const metric of this.#metrics.values()) {
@@ -47,7 +55,6 @@ export default class MetricManager {
         }
 
     }
-
 
 
     recordPizza(amount = 1) {
@@ -61,7 +68,6 @@ export default class MetricManager {
     }
 
 
-
     getMetric(name) {
 
         return this.#metrics.get(name);
@@ -69,13 +75,11 @@ export default class MetricManager {
     }
 
 
-
     getMetrics() {
 
         return this.#metrics.values();
 
     }
-
 
 
     getSnapshot() {
@@ -101,15 +105,11 @@ export default class MetricManager {
 
         const state = {};
 
-
         for(const metric of this.#metrics.values()) {
 
-            state[
-                metric.getName()
-            ] = metric.getValue();
+            state[metric.getName()] = metric.getValue();
 
         }
-
 
         return state;
 
@@ -120,11 +120,7 @@ export default class MetricManager {
 
         for(const metric of this.#metrics.values()) {
 
-            const value =
-                state[
-                    metric.getName()
-                ];
-
+            const value = state[metric.getName()];
 
             if(value !== undefined) {
 
@@ -135,7 +131,6 @@ export default class MetricManager {
         }
 
     }
-
 
 
 }

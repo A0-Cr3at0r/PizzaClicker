@@ -1,3 +1,15 @@
+/**
+ * Application entry point.
+ *
+ * Responsible for initializing the game,
+ * creating managers, connecting UI components
+ * and starting the main game loop.
+ *
+ * Contains no gameplay logic.
+ */
+
+
+// Cores
 import { Game } from "./GameClass.js";
 
 import Pizza from "../Pizza/Pizza.js";
@@ -51,9 +63,10 @@ import { GameEvent } from "./GameEvents.js";
 import BoostFactory from "../Boosts/BoostFactory.js";
 
 
-
 //-----------------------------------------------------
-// Game
+// Game Initialization
+//
+// Creates the core game instance and its initial pizza.
 //-----------------------------------------------------
 
 
@@ -68,8 +81,7 @@ const currentPizza =
 
 
 const game =
-    new Game(
-        0,
+    new Game(0,
         currentPizza
     );
 
@@ -79,26 +91,21 @@ const pizzaUI =
         document.getElementById("pizzaCanvas"),
     );
 
-
-
 //-----------------------------------------------------
 // Managers
+//
+// Creates services responsible for game orchestration,
+// persistence, audio, settings and external systems.
 //-----------------------------------------------------
 
 
-const wallet =
-    new Wallet(10000, currentPizza.getPrice());
+const wallet = new Wallet(10000, currentPizza.getPrice());
 
 
-
-const metricManager =
-    new MetricManager();
+const metricManager =  new MetricManager();
 
 
-
-const boostManager =
-    new BoostManager();
-
+const boostManager = new BoostManager();
 
 
 const clickManager =
@@ -110,18 +117,16 @@ const clickManager =
     );
 
 
-
-const audioManager =
-    new AudioManager();
+const audioManager = new AudioManager();
 
 audioManager.playBackgroundMusic();
 
-const themeManager =
-    new ThemeManager();
+
+const themeManager = new ThemeManager();
 
 
-const skinManager =
-    new SkinManager();
+const skinManager = new SkinManager();
+
 
 const settingsManager =
     new SettingsManager(
@@ -139,6 +144,10 @@ const saveManager =
         boostManager,
         metricManager,
     );
+
+//-----------------------------------------------------
+// Persistence
+//-----------------------------------------------------
 
 let allowSave = true;
 
@@ -159,37 +168,25 @@ window.addEventListener(
 //-----------------------------------------------------
 
 
-metricManager.addMetric(
-    new TotalClicks()
-);
+metricManager.addMetric( new TotalClicks() );
 
 
-metricManager.addMetric(
-    new TotalSlices()
-);
+metricManager.addMetric( new TotalSlices() );
 
 
-metricManager.addMetric(
-    new ClicksPerSecond()
-);
+metricManager.addMetric( new ClicksPerSecond() );
 
 
-metricManager.addMetric(
-    new SlicesPerSecond()
-);
+metricManager.addMetric( new SlicesPerSecond() );
 
 
-metricManager.addMetric(
-    new PizzasPerSecond()
-);
+metricManager.addMetric( new PizzasPerSecond() );
 
-metricManager.addMetric(
-    new SliceMultiplier()
-);
 
-metricManager.addMetric(
-    new MoneyMultiplier()
-);
+metricManager.addMetric( new SliceMultiplier() );
+
+
+metricManager.addMetric( new MoneyMultiplier() );
 
 //-----------------------------------------------------
 // Boost registration
@@ -204,16 +201,12 @@ const boosts = [
     BoostFactory.createAutoClicker
 ];
 
-
-
 //-----------------------------------------------------
 // UI
 //-----------------------------------------------------
 
 
-const metricUI =
-    new MetricUI();
-
+const metricUI = new MetricUI();
 
 
 const boostUI =
@@ -222,9 +215,7 @@ const boostUI =
         purchaseBoost
     );
 
-
     boostUI.render(wallet.balance());
-
 
 
 const uiManager =
@@ -234,11 +225,8 @@ const uiManager =
         boostUI
     );
 
-const settingsUi = 
-    new SettingsUI(
-        settingsManager
-    );
 
+const settingsUi = new SettingsUI( settingsManager );
 
 //-----------------------------------------------------
 // User inputs
@@ -251,8 +239,6 @@ document
         "click",
         performClick
     );
-
-
 
 document
     .getElementById("cookButton")
@@ -275,17 +261,13 @@ document
                 settingsManager.reset();
 
                 location.reload();
-
             }
-
         }
     );
 
 document.addEventListener(
     "pointerdown",
-    () => {
-        audioManager.playBackgroundMusic();
-    },
+    () => { audioManager.playBackgroundMusic(); },
     { once: true }
 );
 
@@ -293,39 +275,42 @@ document.addEventListener(
 // Gameplay actions
 //-----------------------------------------------------
 
+/**
+ * Handles player click actions.
+ *
+ * Sends the action to the game controller
+ * and propagates the result to external systems.
+ */
 
 function performClick() {
 
+    const result = clickManager.click(1);
 
-    const result =
-        clickManager.click(1);
+    uiManager.consumeGameResult( result );
 
-
-    uiManager.consumeGameResult(
-        result
-    );
-
-    audioManager.consumeGameResult(
-        result
-    );
-
+    audioManager.consumeGameResult( result );
 }
 
 
+/**
+ * Handles boost purchasing workflow.
+ *
+ * Creates the boost instance, validates the purchase
+ * and updates dependent systems.
+ */
 
 function purchaseBoost(createBoost) {
 
     const boost = createBoost();
 
-    const result =
-        clickManager.buy(boost);
+    const result = clickManager.buy(boost);
 
     uiManager.consumeGameResult(result);
+
     audioManager.consumeGameResult(result);
 
     return true;
 }
-
 
 
 //-----------------------------------------------------
@@ -342,49 +327,31 @@ settingsManager.load();
 
 settingsManager.apply();
 
-requestAnimationFrame(
-    gameLoop
-);
+requestAnimationFrame( gameLoop );
 
-
+/**
+ * Main game loop.
+ *
+ * Updates time-dependent systems and refreshes
+ * the game state every animation frame.
+ */
 
 function gameLoop(currentTime) {
 
-    const deltaTime =
-        (currentTime - previousTime) / 1000;
-
-
+    const deltaTime = (currentTime - previousTime) / 1000;
 
     previousTime = currentTime;
 
+    metricManager.update( deltaTime );
 
+    boostManager.setDeltaTime( deltaTime );
 
-    metricManager.update(
-        deltaTime
-    );
+    const result = clickManager.click();
 
+    audioManager.consumeGameResult( result );
 
-    boostManager.setDeltaTimme(
-            deltaTime
-        );
+    uiManager.consumeGameResult( result );
 
-        
-    const result =
-        clickManager.click();
-
-     
-
-    audioManager.consumeGameResult(
-        result
-    );
-
-    uiManager.consumeGameResult(
-        result
-    );
-
-
-    requestAnimationFrame(
-        gameLoop
-    );
-
+    requestAnimationFrame( gameLoop );
 }
+

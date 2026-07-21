@@ -1,3 +1,19 @@
+/*
+    Audio Manager
+
+    Handles all game audio.
+
+    Responsibilities:
+    - Play sound effects based on game events
+    - Manage background music
+    - Handle music and SFX volume
+    - Handle mute state
+    - Save and restore audio settings
+
+    This manager consumes GameEvents through GameResult
+    and does not contain gameplay logic.
+*/
+
 import { GameEvent } from "../Game/GameEvents.js";
 
 
@@ -23,9 +39,7 @@ const payError =
     new Audio("assets/sounds/payError.mp3");
 
 
-
 export class AudioManager {
-
 
     #clickSound;
     #cookSound;
@@ -45,23 +59,18 @@ export class AudioManager {
 
     constructor() {
 
-
         this.#clickSound = clickSound;
         this.#cookSound = cookSound;
         this.#successSound = successSound;
 
-
         this.#normalBackgroundMusic =
             backgroundMusic;
-
 
         this.#seriousBackgroundMusic =
             seriousBackgroundMusic;
 
-
         this.#backgroundMusic =
             this.#normalBackgroundMusic;
-
 
         this.#paySuccess = paySuccess;
         this.#payError = payError;
@@ -70,13 +79,11 @@ export class AudioManager {
         this.#sfxVolume = 1;
         this.#muted = false;
 
-
         this.#backgroundMusic.volume =
             this.#musicVolume;
         this.#backgroundMusic.loop = true;
 
     }
-
 
 
     consumeGameResult(result) {
@@ -87,54 +94,33 @@ export class AudioManager {
 
                 case GameEvent.CLICK:
 
-                    this.#play(
-                        this.#clickSound
-                    );
-
+                    this.#play( this.#clickSound );
                     break;
-
 
                 case GameEvent.BOOST_PURCHASED:
 
-                    this.#play(
-                        this.#paySuccess
-                    );
-
+                    this.#play( this.#paySuccess );
                     break;
-
 
                 case GameEvent.PIZZA_COOKED:
 
-                    this.#play(
-                        this.#cookSound
-                    );
-
+                    this.#play( this.#cookSound );
                     break;
-
 
                 case GameEvent.PAYMENT_FAILED:
 
-                    this.#play(
-                        this.#payError
-                    );
-
+                    this.#play( this.#payError );
                     break;
-
 
                 case GameEvent.SUCCESS:
 
-                    this.#play(
-                        this.#successSound
-                    );
-
+                    this.#play(this.#successSound);
                     break;
-
             }
 
         }
 
     }
-
 
 
     #play(sound) {
@@ -143,15 +129,11 @@ export class AudioManager {
             return;
         }
 
-
         sound.currentTime = 0;
 
-
         sound.play()
-        .catch(() => {});
-
+            .catch(() => {});
     }
-
 
 
     playBackgroundMusic() {
@@ -160,17 +142,13 @@ export class AudioManager {
             return;
         }
 
-
         if(this.#backgroundMusic.paused) {
 
             this.#backgroundMusic
                 .play()
                 .catch(() => {});
-
         }
-
     }
-
 
 
     stopBackgroundMusic() {
@@ -180,26 +158,17 @@ export class AudioManager {
     }
 
 
-
     startSeriousMode() {
 
-        this.#changeBackground(
-            this.#seriousBackgroundMusic
-        );
+        this.#changeBackground( this.#seriousBackgroundMusic );
 
     }
-
-
 
     stopSeriousMode() {
 
-        this.#changeBackground(
-            this.#normalBackgroundMusic
-        );
+        this.#changeBackground( this.#normalBackgroundMusic );
 
     }
-
-
 
     #changeBackground(music) {
 
@@ -218,17 +187,14 @@ export class AudioManager {
 
     }
 
+
     setMusicVolume(value) {
 
         this.#musicVolume = value;
 
-
         this.#backgroundMusic.volume =
             value;
-
     }
-
-
 
 
     setSFXVolume(value) {
@@ -242,8 +208,6 @@ export class AudioManager {
         this.#payError.volume = value;
 
     }
-
-
 
 
     mute(value) {
@@ -261,42 +225,27 @@ export class AudioManager {
     }
 
 
-
     getState() {
 
         return {
 
-            musicVolume:
-                this.#musicVolume,
+            musicVolume: this.#musicVolume,
 
-            sfxVolume:
-                this.#sfxVolume,
+            sfxVolume: this.#sfxVolume,
 
-            muted:
-                this.#muted
+            muted: this.#muted
 
         };
-
     }
-
 
 
     loadState(state) {
 
+        this.setMusicVolume( state.musicVolume );
 
-        this.setMusicVolume(
-            state.musicVolume
-        );
+        this.setSFXVolume( state.sfxVolume );
 
-
-        this.setSFXVolume(
-            state.sfxVolume
-        );
-
-
-        this.mute(
-            state.muted
-        );
+        this.mute( state.muted );
 
     }
 

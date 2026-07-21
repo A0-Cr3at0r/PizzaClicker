@@ -12,6 +12,7 @@
 
 import ActiveBoost  from "./ActiveBoost.js";
 import BoostActions  from "../BoostAction.js";
+import { Prices } from "../../Game/Assets.js";
 
 
 export default class AutoClickerBoost extends ActiveBoost {
@@ -23,7 +24,7 @@ export default class AutoClickerBoost extends ActiveBoost {
     constructor(icon, clicksPerSecond = 1) {
         super(
             "Auto Clicker",
-            500,
+            Prices.autoClicker,
             icon,
             "Automatically clicks"
         );

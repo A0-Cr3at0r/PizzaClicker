@@ -1,3 +1,20 @@
+/*
+=====================================================
+ BoostManager
+
+ Manages all active game boosts.
+
+ Handles:
+ - Boost registration after purchase
+ - Modifier boosts
+ - Instant boosts
+ - Active boosts
+ - Boost effect computation
+ - Boost persistence
+
+=====================================================
+*/
+
 import ActiveBoost from "../Boosts/ActiveBoosts/ActiveBoost.js";
 import InstantBoost from "../Boosts/InstantBoosts/InstantBoost.js";
 import MoneyBoost from "../Boosts/ModifierBoosts/MoneyBoost.js";
@@ -16,14 +33,11 @@ import {
 
 export default class BoostManager {
 
-
     #sliceBoosts;
     #moneyBoosts;
     #activeBoosts;
     #instantBoosts;
     #deltaTime;
-
-
 
     constructor() {
 
@@ -34,115 +48,29 @@ export default class BoostManager {
 
     }
 
-
+    //=========================
+    // Boost Management
+    //=========================
 
     buy(boost) {
 
-
         if(boost instanceof InstantBoost) {
-
             this.#instantBoosts.push(boost);
-
         }
-
 
         else if(boost instanceof MoneyBoost) {
-
             this.#moneyBoosts.push(boost);
-
         }
-
 
         else if(boost instanceof SlicesBoost) {
-
             this.#sliceBoosts.push(boost);
-
         }
-
 
         else if(boost instanceof ActiveBoost) {
-
             this.#activeBoosts.push(boost);
-
         }
 
     }
-
-
-
-
-
-    computeActions() {
-
-
-        let actions =
-            new BoostActions();
-
-
-
-        actions =
-            this.#sliceBoosts.reduce(
-                (actions, boost) =>
-                    boost.applyEffect(actions),
-                actions
-            );
-
-
-
-        actions =
-            this.#moneyBoosts.reduce(
-                (actions, boost) =>
-                    boost.applyEffect(actions),
-                actions
-            );
-
-        actions =
-            this.#instantBoosts.reduce(
-                (actions, boost) =>
-                    actions.merge(
-                        boost.applyEffect()
-                    ),
-                actions
-            );
-
-        this.#instantBoosts = [];
-
-        return actions;
-
-    }
-
-
-    update() {
-
-        this.#sliceBoosts =
-            this.#sliceBoosts.filter(
-                boost => boost.update(this.#deltaTime) !== false
-            );
-
-
-
-        let actions =
-            this.computeActions();
-
-        actions =
-            this.#activeBoosts.reduce(
-                (actions, boost) =>
-                    actions.merge(
-                        boost.update(this.#deltaTime)
-                    ),
-                actions
-            );
-
-
-
-        return actions;
-
-    }
-
-    setDeltaTimme(deltaTime) {
-        this.#deltaTime = deltaTime;
-    }
-
 
 
     getBoosts() {
@@ -156,6 +84,66 @@ export default class BoostManager {
 
     }
 
+    //=========================
+    // Effects
+    //=========================
+
+    /**
+     * Computes the combined effect of all active boosts.
+     *
+     * Returns a BoostActions object consumed by Game.
+     */
+
+    computeActions() {
+
+        let actions = new BoostActions();
+
+        actions =
+            this.#sliceBoosts.reduce(
+                (actions, boost) => boost.applyEffect(actions), actions );
+
+        actions =
+            this.#moneyBoosts.reduce(
+                (actions, boost) => boost.applyEffect(actions), actions);
+
+        actions =
+            this.#instantBoosts.reduce(
+                (actions, boost) => actions.merge(boost.applyEffect()), actions);
+
+        this.#instantBoosts = [];
+
+        return actions;
+
+    }
+
+    /**
+     * Updates timed boosts and generates their effects.
+     */
+    
+    update() {
+
+        this.#sliceBoosts =
+            this.#sliceBoosts.filter(
+                boost => boost.update(this.#deltaTime) !== false
+            );
+
+
+        let actions =this.computeActions();
+
+        actions =
+            this.#activeBoosts.reduce(
+                (actions, boost) => actions.merge(boost.update(this.#deltaTime)), actions);
+
+        return actions;
+    }
+
+    //=========================
+    // Configuration
+    //=========================
+
+    setDeltaTime(deltaTime) {
+        this.#deltaTime = deltaTime;
+    }
 
     //=========================
     // Save / Load
@@ -165,11 +153,9 @@ export default class BoostManager {
 
         return {
 
-            moneyBoosts:
-                this.#moneyBoosts.length,
+            moneyBoosts: this.#moneyBoosts.length,
 
-            activeBoosts:
-                this.#activeBoosts.length
+            activeBoosts: this.#activeBoosts.length
 
         };
 
@@ -179,24 +165,18 @@ export default class BoostManager {
 
     loadState(state) {
 
-
         this.#moneyBoosts = [];
         this.#activeBoosts = [];
 
-
         for(let i = 0; i < state.moneyBoosts; i++) {
-
             this.#addMoneyBoost();
         }
 
-
         for(let i = 0; i < state.activeBoosts; i++) {
-
             this.#addActiveBoost();
         }
 
     }
-
 
     //=========================
     // Internal add
@@ -213,6 +193,7 @@ export default class BoostManager {
                                             ));
 
     }
+
 
     #addActiveBoost() {
 

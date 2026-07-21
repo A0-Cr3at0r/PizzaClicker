@@ -1,3 +1,10 @@
+/**
+ * Centralized game constants.
+ *
+ * Contains assets paths, prices, durations,
+ * multipliers and default game configuration.
+ */
+
 export const Icons = {
     percent: "assets/images/percentBoost.png",
     x2: "assets/images/x2Clicks.jpg",
@@ -11,10 +18,14 @@ export const Prices = {
     percent: 100,
     x2: 500,
     x5: 1500,
-    slicePack: 200,
-    pizzaPack: 1000,
-    autoClicker: 500
+    slicePack: 500,
+    pizzaPack: 3500,
+    autoClicker: 2000
 };
+
+//=========================
+// Boost Configuration
+//=========================
 
 export const Durations = {
     x2: 60,
@@ -31,11 +42,15 @@ export const AutoClickers = {
     defaultClicksPerSecond: 1
 };
 
+//=========================
+// Default Pizza
+//=========================
+
 export const GameConfig = {
     name: "Standard",
     totalSlices: 8,
     price: 5,
-    imageSrc: "assets/images/PizzaGameWithoutBG.png"
+    imageSrc: "assets/images/PizzaGame.png"
     
 };
 

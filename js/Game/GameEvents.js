@@ -1,3 +1,10 @@
+/**
+ * Defines all events emitted by the game engine.
+ *
+ * Events are consumed by external managers
+ * such as UI and AudioManager.
+ */
+
 export const GameEvent = Object.freeze({
 
     CLICK: "CLICK",
