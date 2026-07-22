@@ -7,7 +7,7 @@
 
 export const Icons = {
     percent: "assets/images/percentBoost.png",
-    x2: "assets/images/x2Clicks.jpg",
+    x2: "assets/images/x2Clicks.png",
     x5: "assets/images/x5Clicks.png",
     slicePack: "assets/images/+100Slices.png",
     pizzaPack: "assets/images/+100Pizzas.png",
